@@ -1,18 +1,29 @@
 {% extends "base.html" %}
-{% block title %}Resultado demo | vocacional-app{% endblock %}
+{% block title %}{% if is_demo %}Resultado demo{% else %}Tu resultado vocacional{% endif %} | vocacional-app{% endblock %}
 {% block content %}
 <section class="panel">
-  <p class="eyebrow">Resultado vocacional demo</p>
-  <h1>Tu perfil muestra fortalezas investigadoras y sociales</h1>
-  <p>Este resultado es un ejemplo temporal para validar la estructura de la aplicación.</p>
+  <p class="eyebrow">{% if is_demo %}Resultado vocacional demo{% else %}Resultado vocacional RIASEC{% endif %}</p>
+  <h1>Tu perfil combina {{ top_dimensions[0].name }}, {{ top_dimensions[1].name }} y {{ top_dimensions[2].name }}</h1>
+  <p class="lead">Tu código vocacional: <strong>{{ profile_code }}</strong></p>
+  <p>Este resultado es una orientación inicial y no reemplaza una evaluación profesional.</p>
 
   <h2>Scoring RIASEC</h2>
   <div class="score-grid">
-    {% for label, score in scores.items() %}
+    {% for code, score in scores.items() %}
       <div class="score-item">
-        <span>{{ label }}</span>
+        <span>{{ code }}</span>
         <strong>{{ score }}%</strong>
       </div>
+    {% endfor %}
+  </div>
+
+  <h2>Tus dimensiones principales</h2>
+  <div class="cards">
+    {% for dimension in top_dimensions %}
+      <article class="card">
+        <h3>{{ dimension.code }} · {{ dimension.name }} ({{ dimension.percentage }}%)</h3>
+        <p>{{ dimension.description }}</p>
+      </article>
     {% endfor %}
   </div>
 

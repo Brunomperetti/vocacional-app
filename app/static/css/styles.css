@@ -83,3 +83,5 @@ h2 { margin-top: 2rem; }
 .likert-options small { color: var(--muted); }
 .test-actions { align-items: center; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; padding-top: 1rem; }
 .test-actions p { margin: 0; }
+.button { border: 0; cursor: pointer; font-family: inherit; }
+.error-message { background: #fef2f2; border: 1px solid #fecaca; border-radius: 16px; color: #991b1b; font-weight: 700; padding: 1rem; }
