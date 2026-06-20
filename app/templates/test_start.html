@@ -1,15 +1,55 @@
 {% extends "base.html" %}
-{% block title %}Iniciar test | vocacional-app{% endblock %}
+{% block title %}Test vocacional RIASEC | vocacional-app{% endblock %}
 {% block content %}
-<section class="panel">
-  <p class="eyebrow">Test vocacional</p>
-  <h1>Comienza tu orientación vocacional</h1>
-  <p>Esta pantalla es el punto de partida del test. En próximas iteraciones se agregarán preguntas, navegación y guardado de respuestas.</p>
-  <ul class="checklist">
-    <li>Preguntas claras y breves.</li>
-    <li>Cálculo de perfil RIASEC.</li>
-    <li>Recomendaciones de carreras personalizadas.</li>
-  </ul>
-  <a class="button secondary" href="/resultado/demo">Ver resultado de ejemplo</a>
+<section class="panel test-panel">
+  <p class="eyebrow">Test vocacional RIASEC</p>
+  <h1>Explora tus intereses vocacionales</h1>
+  <p class="lead">Responde cada afirmación usando la escala de interés. Por ahora esta pantalla solo muestra el banco inicial de preguntas; el guardado de respuestas y el cálculo de resultados se agregarán en próximos pasos.</p>
+
+  <div class="scale-help" aria-label="Escala de respuestas">
+    {% for value, label in likert_options %}
+      <span><strong>{{ value }}</strong> = {{ label }}</span>
+    {% endfor %}
+  </div>
+
+  <form class="question-form" action="/test" method="get">
+    {% for group in grouped_questions %}
+      <section class="dimension-section" aria-labelledby="dimension-{{ group.code }}">
+        <div class="dimension-heading">
+          <span class="dimension-code">{{ group.code }}</span>
+          <div>
+            <h2 id="dimension-{{ group.code }}">{{ group.name }}</h2>
+            <p>{{ group.questions|length }} preguntas de intereses</p>
+          </div>
+        </div>
+
+        <div class="question-list">
+          {% for question in group.questions %}
+            <article class="question-card">
+              <div class="question-text">
+                <span class="question-id">{{ question.id }}</span>
+                <p>{{ question.text }}</p>
+              </div>
+              <fieldset class="likert-options" aria-label="Respuesta para {{ question.id }}">
+                <legend>Selecciona una opción</legend>
+                {% for value, label in likert_options %}
+                  <label>
+                    <input type="radio" name="{{ question.id }}" value="{{ value }}">
+                    <span>{{ value }}</span>
+                    <small>{{ label }}</small>
+                  </label>
+                {% endfor %}
+              </fieldset>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+    {% endfor %}
+
+    <div class="test-actions">
+      <p>No se guardarán respuestas en esta versión.</p>
+      <a class="button secondary" href="/resultado/demo">Ver resultado de ejemplo</a>
+    </div>
+  </form>
 </section>
 {% endblock %}
