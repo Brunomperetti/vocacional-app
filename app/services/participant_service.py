@@ -3,7 +3,7 @@
 import re
 from collections.abc import Mapping
 
-PARTICIPANT_FIELDS = ("name", "email", "age", "current_status", "location")
+PARTICIPANT_FIELDS = ("name", "whatsapp", "age", "current_status", "location")
 CURRENT_STATUS_OPTIONS = (
     "Estoy en secundaria",
     "Terminé la secundaria",
@@ -12,15 +12,30 @@ CURRENT_STATUS_OPTIONS = (
     "Estoy trabajando y quiero reorientarme",
     "Otro",
 )
-_EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+_WHATSAPP_ALLOWED_PATTERN = re.compile(r"^\+?[\d\s()\-]+$")
+
+
+def normalize_whatsapp(value: str) -> str:
+    """Normaliza WhatsApp conservando solo números y un signo + inicial si existe."""
+    raw_value = str(value or "").strip()
+    if not raw_value:
+        return ""
+
+    digits = "".join(character for character in raw_value if character.isdigit())
+    prefix = "+" if raw_value.startswith("+") else ""
+    return f"{prefix}{digits}"
 
 
 def clean_participant_data(form_data: Mapping[str, object]) -> dict[str, str]:
-    """Devuelve los campos del participante como strings limpios."""
+    """Devuelve los campos del participante como strings limpios y normalizados."""
     participant = {}
     for field in PARTICIPANT_FIELDS:
         value = form_data.get(field, "")
         participant[field] = str(value).strip() if value is not None else ""
+
+    whatsapp = participant.get("whatsapp", "")
+    if whatsapp and _WHATSAPP_ALLOWED_PATTERN.match(whatsapp):
+        participant["whatsapp"] = normalize_whatsapp(whatsapp)
     return participant
 
 
@@ -28,9 +43,16 @@ def validate_participant_data(participant: dict[str, str]) -> list[str]:
     """Valida solo los campos opcionales que fueron completados."""
     errors = []
 
-    email = participant.get("email", "")
-    if email and not _EMAIL_PATTERN.match(email):
-        errors.append("Ingresá un email válido o dejá el campo vacío.")
+    whatsapp = participant.get("whatsapp", "")
+    if whatsapp:
+        whatsapp_digits = whatsapp[1:] if whatsapp.startswith("+") else whatsapp
+        if (
+            not _WHATSAPP_ALLOWED_PATTERN.match(whatsapp)
+            or not whatsapp_digits.isdigit()
+            or len(whatsapp_digits) < 6
+            or len(whatsapp_digits) > 15
+        ):
+            errors.append("Ingresá un WhatsApp válido o dejá el campo vacío.")
 
     age = participant.get("age", "")
     if age:
