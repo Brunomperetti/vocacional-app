@@ -13,6 +13,7 @@ from app.services.participant_service import (
 )
 from app.services.profile_summary_service import build_result_insights
 from app.services.recommendation_service import recommend_careers
+from app.services.settings_service import get_donation_url
 from app.services.scoring_service import (
     DIMENSION_LABELS,
     build_profile_code,
@@ -64,6 +65,7 @@ def _render_result(request: Request, answers: dict[str, str]) -> HTMLResponse:
             "is_demo": False,
             "participant": participant,
             "display_name": display_name,
+            "donation_url": get_donation_url(),
         },
     )
 
@@ -94,6 +96,7 @@ def _build_step_context(
         "answers": answers,
         "previous_step": step - 1 if step > 1 else None,
         "next_label": "Ver mi resultado" if step == TOTAL_STEPS else "Siguiente",
+        "donation_url": get_donation_url(),
     }
 
 
@@ -111,6 +114,7 @@ async def test_start(request: Request):
             "current_status_options": CURRENT_STATUS_OPTIONS,
             "participant": request.session.get(SESSION_PARTICIPANT_KEY, {}),
             "errors": [],
+            "donation_url": get_donation_url(),
         },
     )
 
@@ -133,6 +137,7 @@ async def start_test(request: Request):
                 "current_status_options": CURRENT_STATUS_OPTIONS,
                 "participant": participant,
                 "errors": errors,
+                "donation_url": get_donation_url(),
             },
             status_code=400,
         )

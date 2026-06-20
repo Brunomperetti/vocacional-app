@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 from app.services.participant_service import get_display_name
 from app.services.profile_summary_service import build_result_insights
 from app.services.recommendation_service import get_demo_recommendations
+from app.services.settings_service import get_donation_url
 from app.services.scoring_service import (
     build_profile_code,
     get_demo_riasec_scores,
@@ -38,5 +39,6 @@ async def demo_result(request: Request):
             "is_demo": True,
             "participant": participant,
             "display_name": get_display_name(participant),
+            "donation_url": get_donation_url(),
         },
     )
