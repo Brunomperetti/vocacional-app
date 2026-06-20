@@ -140,3 +140,14 @@ h2 { margin-top: 2rem; }
   .result-section { padding: 1rem; }
   .career-card-header { flex-direction: column; }
 }
+.participant-form { border-top: 1px solid var(--border); display: grid; gap: 1.25rem; margin-top: 2rem; padding-top: 1.5rem; }
+.participant-form h2 { margin: 0 0 .5rem; }
+.form-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.form-grid label { color: var(--text); display: grid; font-weight: 800; gap: .45rem; }
+.form-grid input, .form-grid select { border: 1px solid var(--border); border-radius: 14px; color: var(--text); font: inherit; padding: .8rem .9rem; width: 100%; }
+.form-grid input:focus, .form-grid select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, .12); outline: none; }
+.form-grid-wide { grid-column: 1 / -1; }
+.error-message p { color: #991b1b; margin: 0; }
+.participant-card { background: #f8fafc; }
+.participant-meta { display: flex; flex-wrap: wrap; gap: .75rem; }
+.participant-meta span { background: #eef2ff; border-radius: 999px; color: var(--text); padding: .55rem .8rem; }
