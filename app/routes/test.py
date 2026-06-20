@@ -5,6 +5,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from app.data.questions import TEST_QUESTIONS
+from app.services.profile_summary_service import build_result_insights
 from app.services.recommendation_service import recommend_careers
 from app.services.scoring_service import (
     DIMENSION_LABELS,
@@ -40,6 +41,7 @@ def _render_result(request: Request, answers: dict[str, str]) -> HTMLResponse:
     top_dimensions = get_top_dimensions(percentages)
     profile_code = build_profile_code(top_dimensions)
     recommendations = recommend_careers(percentages)
+    insights = build_result_insights(top_dimensions, profile_code, percentages, recommendations)
 
     return templates.TemplateResponse(
         "result.html",
@@ -49,6 +51,7 @@ def _render_result(request: Request, answers: dict[str, str]) -> HTMLResponse:
             "top_dimensions": top_dimensions,
             "profile_code": profile_code,
             "recommendations": recommendations,
+            "insights": insights,
             "is_demo": False,
         },
     )
