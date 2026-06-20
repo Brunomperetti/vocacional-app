@@ -31,8 +31,12 @@
   <div class="cards">
     {% for item in recommendations %}
       <article class="card">
-        <h3>{{ item.career }}</h3>
-        <p>{{ item.reason }}</p>
+        <h3>{{ item.name }} · {{ item.match_percentage }}% de compatibilidad</h3>
+        <p><strong>Área:</strong> {{ item.area }}</p>
+        <p><strong>Duración:</strong> {{ item.duration }}</p>
+        <p><strong>Tipo de formación:</strong> {{ item.study_type }}</p>
+        <p>{{ item.description }}</p>
+        <p><strong>Skills principales:</strong> {{ item.skills | join(", ") }}</p>
       </article>
     {% endfor %}
   </div>
