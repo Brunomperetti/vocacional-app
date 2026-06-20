@@ -5,11 +5,11 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.data.questions import TEST_QUESTIONS, get_all_questions
+from app.services.recommendation_service import recommend_careers
 from app.services.scoring_service import (
     build_profile_code,
     calculate_riasec_percentages,
     calculate_riasec_scores,
-    get_recommendations_for_dimension,
     get_top_dimensions,
 )
 
@@ -90,7 +90,7 @@ async def process_test(request: Request):
     percentages = calculate_riasec_percentages(scores)
     top_dimensions = get_top_dimensions(percentages)
     profile_code = build_profile_code(top_dimensions)
-    recommendations = get_recommendations_for_dimension(top_dimensions[0]["code"])
+    recommendations = recommend_careers(percentages)
 
     return templates.TemplateResponse(
         "result.html",

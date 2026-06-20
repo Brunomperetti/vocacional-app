@@ -75,7 +75,9 @@ La app ya incluye un banco inicial de 36 preguntas RIASEC en `app/data/questions
 
 La ruta `/test` muestra todas las preguntas en una sola pantalla, agrupadas por dimensión y con escala Likert de 1 a 5. El formulario permite responder las 36 preguntas obligatorias, enviar las respuestas con `POST /test` y ver un resultado RIASEC calculado en base a los valores elegidos.
 
-El sistema calcula puntajes reales por dimensión, convierte cada puntaje a porcentaje sobre un máximo de 30 puntos, ordena las dimensiones principales y arma un código vocacional de 3 letras. Por ahora las recomendaciones de carreras son una lista temporal basada en la dimensión principal.
+El sistema calcula puntajes reales por dimensión, convierte cada puntaje a porcentaje sobre un máximo de 30 puntos, ordena las dimensiones principales y arma un código vocacional de 3 letras. Además, incluye una base inicial de al menos 40 carreras y oficios en `app/data/careers.py`, cada una con descripción, área, tipo de formación, duración, skills y perfil RIASEC propio.
+
+Las recomendaciones de `/test` comparan el perfil RIASEC porcentual del usuario contra el perfil RIASEC de cada carrera, calculan una compatibilidad de 0 a 100 y muestran las mejores opciones ordenadas de mayor a menor compatibilidad.
 
 En esta etapa las respuestas todavía no se guardan en base de datos y no se crea lógica adicional de persistencia para el test.
 
@@ -99,4 +101,4 @@ El archivo `render.yaml` incluye una configuración inicial para:
 
 ## Estado actual
 
-Incluye la base funcional inicial, el banco de 36 preguntas RIASEC, el formulario completo en `/test` y el cálculo real de scoring RIASEC en memoria. Todavía no contiene guardado de respuestas del test en base de datos, login real ni machine learning.
+Incluye la base funcional inicial, el banco de 36 preguntas RIASEC, el formulario completo en `/test`, el cálculo real de scoring RIASEC en memoria y una recomendación inicial de carreras por compatibilidad RIASEC. Todavía no contiene guardado de respuestas del test en base de datos, login real ni machine learning.
