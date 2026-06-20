@@ -4,6 +4,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from app.services.participant_service import get_display_name
 from app.services.profile_summary_service import build_result_insights
 from app.services.recommendation_service import get_demo_recommendations
 from app.services.scoring_service import (
@@ -24,6 +25,7 @@ async def demo_result(request: Request):
     profile_code = build_profile_code(top_dimensions)
     recommendations = get_demo_recommendations()
     insights = build_result_insights(top_dimensions, profile_code, scores, recommendations)
+    participant = {}
     return templates.TemplateResponse(
         "result.html",
         {
@@ -34,5 +36,7 @@ async def demo_result(request: Request):
             "recommendations": recommendations,
             "insights": insights,
             "is_demo": True,
+            "participant": participant,
+            "display_name": get_display_name(participant),
         },
     )

@@ -3,8 +3,19 @@
 {% block content %}
 <section class="panel result-page">
   <p class="eyebrow">{% if is_demo %}Resultado vocacional demo{% else %}Resultado vocacional RIASEC{% endif %}</p>
-  <h1>Tu perfil combina {{ top_dimensions[0].name }}, {{ top_dimensions[1].name }} y {{ top_dimensions[2].name }}</h1>
+  <h1>{% if display_name == "Tu" %}Tu{% else %}{{ display_name }}, tu{% endif %} perfil combina {{ top_dimensions[0].name }}, {{ top_dimensions[1].name }} y {{ top_dimensions[2].name }}</h1>
   <p class="lead">Tu código vocacional: <strong>{{ profile_code }}</strong></p>
+
+  {% if participant and (participant.get('current_status') or participant.get('age') or participant.get('location')) %}
+    <div class="result-section participant-card">
+      <h2>Datos iniciales</h2>
+      <div class="participant-meta">
+        {% if participant.get('current_status') %}<span><strong>Situación actual:</strong> {{ participant.get('current_status') }}</span>{% endif %}
+        {% if participant.get('age') %}<span><strong>Edad:</strong> {{ participant.get('age') }}</span>{% endif %}
+        {% if participant.get('location') %}<span><strong>Ubicación:</strong> {{ participant.get('location') }}</span>{% endif %}
+      </div>
+    </div>
+  {% endif %}
 
   <div class="result-section result-highlight">
     <h2>Resumen de tu perfil</h2>

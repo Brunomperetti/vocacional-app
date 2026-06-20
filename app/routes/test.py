@@ -5,6 +5,12 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from app.data.questions import TEST_QUESTIONS
+from app.services.participant_service import (
+    CURRENT_STATUS_OPTIONS,
+    clean_participant_data,
+    get_display_name,
+    validate_participant_data,
+)
 from app.services.profile_summary_service import build_result_insights
 from app.services.recommendation_service import recommend_careers
 from app.services.scoring_service import (
@@ -24,7 +30,8 @@ from app.services.test_steps import (
 templates = Jinja2Templates(directory="app/templates")
 router = APIRouter(prefix="/test", tags=["test"])
 
-SESSION_ANSWERS_KEY = "test_answers"
+SESSION_ANSWERS_KEY = "answers"
+SESSION_PARTICIPANT_KEY = "participant"
 LIKERT_OPTIONS = [
     (1, "No me interesa nada"),
     (2, "Me interesa poco"),
@@ -42,6 +49,8 @@ def _render_result(request: Request, answers: dict[str, str]) -> HTMLResponse:
     profile_code = build_profile_code(top_dimensions)
     recommendations = recommend_careers(percentages)
     insights = build_result_insights(top_dimensions, profile_code, percentages, recommendations)
+    participant = request.session.get(SESSION_PARTICIPANT_KEY, {})
+    display_name = get_display_name(participant)
 
     return templates.TemplateResponse(
         "result.html",
@@ -53,6 +62,8 @@ def _render_result(request: Request, answers: dict[str, str]) -> HTMLResponse:
             "recommendations": recommendations,
             "insights": insights,
             "is_demo": False,
+            "participant": participant,
+            "display_name": display_name,
         },
     )
 
@@ -97,8 +108,38 @@ async def test_start(request: Request):
             "total_steps": TOTAL_STEPS,
             "dimension_labels": DIMENSION_LABELS,
             "step_dimensions": STEP_DIMENSIONS,
+            "current_status_options": CURRENT_STATUS_OPTIONS,
+            "participant": request.session.get(SESSION_PARTICIPANT_KEY, {}),
+            "errors": [],
         },
     )
+
+
+@router.post("/iniciar", response_class=HTMLResponse)
+async def start_test(request: Request):
+    """Guarda datos iniciales opcionales y comienza el wizard."""
+    form = await request.form()
+    participant = clean_participant_data(form)
+    errors = validate_participant_data(participant)
+
+    if errors:
+        return templates.TemplateResponse(
+            "test_start.html",
+            {
+                "request": request,
+                "total_steps": TOTAL_STEPS,
+                "dimension_labels": DIMENSION_LABELS,
+                "step_dimensions": STEP_DIMENSIONS,
+                "current_status_options": CURRENT_STATUS_OPTIONS,
+                "participant": participant,
+                "errors": errors,
+            },
+            status_code=400,
+        )
+
+    request.session[SESSION_PARTICIPANT_KEY] = participant
+    request.session[SESSION_ANSWERS_KEY] = {}
+    return RedirectResponse(url="/test/paso/1", status_code=303)
 
 
 @router.get("/paso/{step}", response_class=HTMLResponse)

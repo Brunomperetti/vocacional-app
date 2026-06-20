@@ -24,9 +24,45 @@
 
   <p class="test-note">Respondé según lo que más te representa hoy, no según lo que otros esperan de vos.</p>
 
-  <div class="test-actions">
-    <p>Las respuestas se guardan temporalmente en tu sesión mientras completás el test.</p>
-    <a class="button" href="/test/paso/1">Comenzar test</a>
-  </div>
+  <form class="participant-form" action="/test/iniciar" method="post">
+    <div>
+      <h2>Antes de comenzar</h2>
+      <p>Estos datos son opcionales y por ahora solo se usan para personalizar tu resultado.</p>
+    </div>
+
+    {% if errors %}
+      <div class="error-message" role="alert">
+        {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="form-grid">
+      <label>Nombre
+        <input type="text" name="name" value="{{ participant.get('name', '') }}" placeholder="Ej.: Camila">
+      </label>
+      <label>Email
+        <input type="email" name="email" value="{{ participant.get('email', '') }}" placeholder="tu@email.com">
+      </label>
+      <label>Edad
+        <input type="number" name="age" value="{{ participant.get('age', '') }}" min="12" max="80" placeholder="Ej.: 18">
+      </label>
+      <label>Situación actual
+        <select name="current_status">
+          <option value="">Prefiero no decirlo</option>
+          {% for option in current_status_options %}
+            <option value="{{ option }}" {% if participant.get('current_status', '') == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="form-grid-wide">País / provincia / ciudad
+        <input type="text" name="location" value="{{ participant.get('location', '') }}" placeholder="Ej.: Argentina, Córdoba, Río Cuarto">
+      </label>
+    </div>
+
+    <div class="test-actions">
+      <p>Las respuestas y estos datos se guardan temporalmente en tu sesión mientras completás el test.</p>
+      <button class="button" type="submit">Comenzar test</button>
+    </div>
+  </form>
 </section>
 {% endblock %}
