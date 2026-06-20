@@ -60,3 +60,26 @@ h2 { margin-top: 2rem; }
 .score-item { align-items: center; display: flex; justify-content: space-between; }
 .score-item strong { color: var(--primary); }
 .narrow { max-width: 560px; }
+
+.test-panel .lead { max-width: 820px; }
+.scale-help { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 18px; color: var(--muted); display: grid; gap: .65rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin: 1.5rem 0 2rem; padding: 1rem; }
+.scale-help strong, .dimension-code, .question-id { color: var(--primary); }
+.question-form { display: grid; gap: 2rem; }
+.dimension-section { border-top: 1px solid var(--border); padding-top: 1.5rem; }
+.dimension-heading { align-items: center; display: flex; gap: 1rem; margin-bottom: 1rem; }
+.dimension-heading h2 { margin: 0; }
+.dimension-heading p { color: var(--muted); margin: .25rem 0 0; }
+.dimension-code { align-items: center; background: #eef2ff; border-radius: 16px; display: inline-flex; font-size: 1.4rem; font-weight: 900; height: 3.25rem; justify-content: center; width: 3.25rem; }
+.question-list { display: grid; gap: 1rem; }
+.question-card { background: #ffffff; border: 1px solid var(--border); border-radius: 18px; display: grid; gap: 1rem; padding: 1.25rem; }
+.question-text { display: flex; gap: .75rem; }
+.question-text p { color: var(--text); margin: 0; }
+.question-id { font-weight: 900; min-width: 2.25rem; }
+.likert-options { border: 0; display: grid; gap: .5rem; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); margin: 0; padding: 0; }
+.likert-options legend { color: var(--muted); font-size: .9rem; font-weight: 700; grid-column: 1 / -1; margin-bottom: .25rem; }
+.likert-options label { align-items: center; border: 1px solid var(--border); border-radius: 14px; cursor: pointer; display: flex; gap: .45rem; padding: .65rem; }
+.likert-options label:hover { border-color: var(--primary); }
+.likert-options span { font-weight: 900; }
+.likert-options small { color: var(--muted); }
+.test-actions { align-items: center; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; padding-top: 1rem; }
+.test-actions p { margin: 0; }

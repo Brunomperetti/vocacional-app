@@ -20,6 +20,7 @@ app/
 ├── models.py
 ├── schemas.py
 ├── auth.py
+├── data/
 ├── routes/
 ├── services/
 ├── templates/
@@ -68,6 +69,12 @@ uvicorn app.main:app --reload
 - Admin temporal: <http://127.0.0.1:8000/admin>
 - Health check: <http://127.0.0.1:8000/health>
 
+## Banco inicial de preguntas RIASEC
+
+La app ya incluye un banco inicial de 36 preguntas RIASEC en `app/data/questions.py`, distribuido en 6 preguntas por dimensión: Realista, Investigativo, Artístico, Social, Emprendedor y Convencional.
+
+La ruta `/test` muestra todas las preguntas en una sola pantalla, agrupadas por dimensión y con escala Likert de 1 a 5. En esta etapa las respuestas todavía no se guardan, no se calcula resultado y no se crea lógica adicional de base de datos para el test.
+
 ## Base de datos
 
 La conexión se configura con la variable `DATABASE_URL`.
@@ -88,4 +95,4 @@ El archivo `render.yaml` incluye una configuración inicial para:
 
 ## Estado actual
 
-Incluye solo la base funcional inicial. Todavía no contiene lógica completa del test, login real ni machine learning.
+Incluye la base funcional inicial y el banco inicial de preguntas RIASEC. Todavía no contiene guardado de respuestas del test, cálculo real de resultados, login real ni machine learning.
