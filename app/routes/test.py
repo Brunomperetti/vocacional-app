@@ -1,29 +1,29 @@
-"""Rutas iniciales del test vocacional."""
+"""Rutas del test vocacional RIASEC por etapas."""
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from app.data.questions import TEST_QUESTIONS, get_all_questions
+from app.data.questions import TEST_QUESTIONS
 from app.services.recommendation_service import recommend_careers
 from app.services.scoring_service import (
+    DIMENSION_LABELS,
     build_profile_code,
     calculate_riasec_percentages,
     calculate_riasec_scores,
     get_top_dimensions,
 )
+from app.services.test_steps import (
+    STEP_DIMENSIONS,
+    TOTAL_STEPS,
+    get_step_dimension_description,
+    get_step_questions,
+)
 
 templates = Jinja2Templates(directory="app/templates")
 router = APIRouter(prefix="/test", tags=["test"])
 
-DIMENSIONS = {
-    "R": "Realista",
-    "I": "Investigativo",
-    "A": "Artístico",
-    "S": "Social",
-    "E": "Emprendedor",
-    "C": "Convencional",
-}
+SESSION_ANSWERS_KEY = "test_answers"
 LIKERT_OPTIONS = [
     (1, "No me interesa nada"),
     (2, "Me interesa poco"),
@@ -33,60 +33,9 @@ LIKERT_OPTIONS = [
 ]
 
 
-def _build_test_context(request: Request, error: str | None = None) -> dict:
-    """Construye el contexto compartido para renderizar el formulario del test."""
-    grouped_questions = [
-        {
-            "code": code,
-            "name": name,
-            "questions": [
-                question
-                for question in get_all_questions()
-                if question["dimension"] == code
-            ],
-        }
-        for code, name in DIMENSIONS.items()
-    ]
-    return {
-        "request": request,
-        "grouped_questions": grouped_questions,
-        "likert_options": LIKERT_OPTIONS,
-        "error": error,
-    }
-
-
-@router.get("", response_class=HTMLResponse)
-async def test_start(request: Request):
-    """Pantalla inicial del test vocacional con preguntas RIASEC."""
-    return templates.TemplateResponse("test_start.html", _build_test_context(request))
-
-
-@router.post("", response_class=HTMLResponse)
-async def process_test(request: Request):
-    """Procesa respuestas RIASEC y muestra un resultado calculado."""
-    form = await request.form()
-    question_ids = [question["id"] for question in TEST_QUESTIONS]
-    answers = {question_id: form.get(question_id) for question_id in question_ids}
-    missing_answers = [question_id for question_id, value in answers.items() if value is None]
-
-    if missing_answers:
-        error = "Respondé todas las preguntas antes de ver tu resultado."
-        return templates.TemplateResponse(
-            "test_start.html",
-            _build_test_context(request, error=error),
-            status_code=400,
-        )
-
-    try:
-        scores = calculate_riasec_scores(answers)
-    except (KeyError, TypeError, ValueError):
-        error = "Hay respuestas inválidas. Revisá el formulario y volvé a intentarlo."
-        return templates.TemplateResponse(
-            "test_start.html",
-            _build_test_context(request, error=error),
-            status_code=400,
-        )
-
+def _render_result(request: Request, answers: dict[str, str]) -> HTMLResponse:
+    """Calcula y renderiza el resultado RIASEC final."""
+    scores = calculate_riasec_scores(answers)
     percentages = calculate_riasec_percentages(scores)
     top_dimensions = get_top_dimensions(percentages)
     profile_code = build_profile_code(top_dimensions)
@@ -103,3 +52,122 @@ async def process_test(request: Request):
             "is_demo": False,
         },
     )
+
+
+def _build_step_context(
+    request: Request,
+    step: int,
+    error: str | None = None,
+    submitted_answers: dict[str, str] | None = None,
+) -> dict:
+    """Construye el contexto compartido para un paso del test."""
+    dimension = STEP_DIMENSIONS[step]
+    progress_percentage = round((step / TOTAL_STEPS) * 100)
+    session_answers = request.session.get(SESSION_ANSWERS_KEY, {})
+    answers = {**session_answers, **(submitted_answers or {})}
+
+    return {
+        "request": request,
+        "step": step,
+        "total_steps": TOTAL_STEPS,
+        "progress_percentage": progress_percentage,
+        "dimension_code": dimension,
+        "dimension_name": DIMENSION_LABELS[dimension],
+        "dimension_description": get_step_dimension_description(step),
+        "questions": get_step_questions(step),
+        "likert_options": LIKERT_OPTIONS,
+        "error": error,
+        "answers": answers,
+        "previous_step": step - 1 if step > 1 else None,
+        "next_label": "Ver mi resultado" if step == TOTAL_STEPS else "Siguiente",
+    }
+
+
+@router.get("", response_class=HTMLResponse)
+async def test_start(request: Request):
+    """Pantalla inicial del test vocacional por etapas."""
+    request.session.pop(SESSION_ANSWERS_KEY, None)
+    return templates.TemplateResponse(
+        "test_start.html",
+        {
+            "request": request,
+            "total_steps": TOTAL_STEPS,
+            "dimension_labels": DIMENSION_LABELS,
+            "step_dimensions": STEP_DIMENSIONS,
+        },
+    )
+
+
+@router.get("/paso/{step}", response_class=HTMLResponse)
+async def show_test_step(request: Request, step: int):
+    """Muestra las preguntas de una dimensión RIASEC en el wizard."""
+    if step not in STEP_DIMENSIONS:
+        return RedirectResponse(url="/test", status_code=303)
+
+    return templates.TemplateResponse("test_step.html", _build_step_context(request, step))
+
+
+@router.post("/paso/{step}", response_class=HTMLResponse)
+async def process_test_step(request: Request, step: int):
+    """Procesa un paso del test y avanza hasta calcular el resultado final."""
+    if step not in STEP_DIMENSIONS:
+        return RedirectResponse(url="/test", status_code=303)
+
+    form = await request.form()
+    questions = get_step_questions(step)
+    question_ids = [question["id"] for question in questions]
+    step_answers = {question_id: form.get(question_id) for question_id in question_ids}
+    missing_answers = [question_id for question_id, value in step_answers.items() if value is None]
+
+    if missing_answers:
+        return templates.TemplateResponse(
+            "test_step.html",
+            _build_step_context(
+                request,
+                step,
+                error="Respondé las 6 preguntas de esta etapa antes de continuar.",
+                submitted_answers={key: value for key, value in step_answers.items() if value is not None},
+            ),
+            status_code=400,
+        )
+
+    try:
+        normalized_answers = {
+            question_id: str(int(value))
+            for question_id, value in step_answers.items()
+            if value is not None
+        }
+        if any(int(value) < 1 or int(value) > 5 for value in normalized_answers.values()):
+            raise ValueError
+    except (TypeError, ValueError):
+        return templates.TemplateResponse(
+            "test_step.html",
+            _build_step_context(
+                request,
+                step,
+                error="Hay respuestas inválidas. Revisá la etapa y volvé a intentarlo.",
+            ),
+            status_code=400,
+        )
+
+    accumulated_answers = request.session.get(SESSION_ANSWERS_KEY, {})
+    accumulated_answers.update(normalized_answers)
+    request.session[SESSION_ANSWERS_KEY] = accumulated_answers
+
+    if step < TOTAL_STEPS:
+        return RedirectResponse(url=f"/test/paso/{step + 1}", status_code=303)
+
+    final_question_ids = [question["id"] for question in TEST_QUESTIONS]
+    if any(question_id not in accumulated_answers for question_id in final_question_ids):
+        return templates.TemplateResponse(
+            "test_step.html",
+            _build_step_context(
+                request,
+                step,
+                error="Faltan respuestas de etapas anteriores. Volvé a comenzar el test.",
+            ),
+            status_code=400,
+        )
+
+    request.session.pop(SESSION_ANSWERS_KEY, None)
+    return _render_result(request, accumulated_answers)

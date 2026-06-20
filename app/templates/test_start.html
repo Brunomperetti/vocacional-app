@@ -1,59 +1,32 @@
 {% extends "base.html" %}
 {% block title %}Test vocacional RIASEC | vocacional-app{% endblock %}
 {% block content %}
-<section class="panel test-panel">
+<section class="panel test-panel test-intro">
   <p class="eyebrow">Test vocacional RIASEC</p>
-  <h1>Explora tus intereses vocacionales</h1>
-  <p class="lead">Respondé cada afirmación usando la escala de interés. Al finalizar, calcularemos tu perfil RIASEC en base a tus respuestas.</p>
+  <h1>Descubrí tu perfil vocacional en 6 etapas</h1>
+  <p class="lead">Este test te ayuda a explorar intereses Realistas, Investigativos, Artísticos, Sociales, Emprendedores y Convencionales. En lugar de responder todo junto, vas a avanzar paso a paso.</p>
 
-  <div class="scale-help" aria-label="Escala de respuestas">
-    {% for value, label in likert_options %}
-      <span><strong>{{ value }}</strong> = {{ label }}</span>
+  <div class="wizard-summary" aria-label="Etapas del test">
+    {% for step, code in step_dimensions.items() %}
+      <div class="wizard-summary-item">
+        <span>{{ step }}</span>
+        <strong>{{ dimension_labels[code] }}</strong>
+        <small>{{ code }}</small>
+      </div>
     {% endfor %}
   </div>
 
-  {% if error %}
-    <div class="error-message" role="alert">{{ error }}</div>
-  {% endif %}
+  <div class="scale-help" aria-label="Información del test">
+    <span><strong>{{ total_steps }}</strong> etapas</span>
+    <span><strong>6</strong> preguntas por etapa</span>
+    <span><strong>36</strong> respuestas para calcular tu resultado</span>
+  </div>
 
-  <form class="question-form" action="/test" method="post">
-    {% for group in grouped_questions %}
-      <section class="dimension-section" aria-labelledby="dimension-{{ group.code }}">
-        <div class="dimension-heading">
-          <span class="dimension-code">{{ group.code }}</span>
-          <div>
-            <h2 id="dimension-{{ group.code }}">{{ group.name }}</h2>
-            <p>{{ group.questions|length }} preguntas de intereses</p>
-          </div>
-        </div>
+  <p class="test-note">Respondé según lo que más te representa hoy, no según lo que otros esperan de vos.</p>
 
-        <div class="question-list">
-          {% for question in group.questions %}
-            <article class="question-card">
-              <div class="question-text">
-                <span class="question-id">{{ question.id }}</span>
-                <p>{{ question.text }}</p>
-              </div>
-              <fieldset class="likert-options" aria-label="Respuesta para {{ question.id }}">
-                <legend>Selecciona una opción</legend>
-                {% for value, label in likert_options %}
-                  <label>
-                    <input type="radio" name="{{ question.id }}" value="{{ value }}" required>
-                    <span>{{ value }}</span>
-                    <small>{{ label }}</small>
-                  </label>
-                {% endfor %}
-              </fieldset>
-            </article>
-          {% endfor %}
-        </div>
-      </section>
-    {% endfor %}
-
-    <div class="test-actions">
-      <p>No se guardarán respuestas en esta versión.</p>
-      <button class="button" type="submit">Ver mi resultado</button>
-    </div>
-  </form>
+  <div class="test-actions">
+    <p>Las respuestas se guardan temporalmente en tu sesión mientras completás el test.</p>
+    <a class="button" href="/test/paso/1">Comenzar test</a>
+  </div>
 </section>
 {% endblock %}
