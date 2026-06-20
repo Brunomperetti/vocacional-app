@@ -23,6 +23,9 @@
 
   <footer class="site-footer">
     <p>Orientación vocacional basada en RIASEC. Versión inicial.</p>
+    {% if donation_url %}
+      <a class="footer-support-link" href="{{ donation_url }}" target="_blank" rel="noopener noreferrer">Apoyar el proyecto</a>
+    {% endif %}
   </footer>
   <script src="{{ url_for('static', path='/js/app.js') }}"></script>
 </body>

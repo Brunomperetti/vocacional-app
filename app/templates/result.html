@@ -94,6 +94,14 @@
     </ol>
   </div>
 
+  {% if donation_url %}
+    <div class="result-section donation-section">
+      <h2>¿Te sirvió el test?</h2>
+      <p>Este test es gratuito y busca ayudar a estudiantes y personas que están decidiendo qué estudiar. Si te resultó útil y querés colaborar con el mantenimiento de la app, el dominio, el hosting y futuras mejoras, podés hacer un aporte voluntario. No es obligatorio.</p>
+      <a class="button" href="{{ donation_url }}" target="_blank" rel="noopener noreferrer">Aportar voluntariamente</a>
+    </div>
+  {% endif %}
+
   <div class="result-section important-note">
     <h2>Importante</h2>
     <p>Este resultado es una orientación inicial basada en tus respuestas. No reemplaza una evaluación profesional ni define una única carrera posible. Usalo como punto de partida para explorar opciones, conversar con orientadores y comparar alternativas.</p>
