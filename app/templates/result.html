@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Resultado demo | vocacional-app{% endblock %}
+{% block content %}
+<section class="panel">
+  <p class="eyebrow">Resultado vocacional demo</p>
+  <h1>Tu perfil muestra fortalezas investigadoras y sociales</h1>
+  <p>Este resultado es un ejemplo temporal para validar la estructura de la aplicación.</p>
+
+  <h2>Scoring RIASEC</h2>
+  <div class="score-grid">
+    {% for label, score in scores.items() %}
+      <div class="score-item">
+        <span>{{ label }}</span>
+        <strong>{{ score }}%</strong>
+      </div>
+    {% endfor %}
+  </div>
+
+  <h2>Carreras sugeridas</h2>
+  <div class="cards">
+    {% for item in recommendations %}
+      <article class="card">
+        <h3>{{ item.career }}</h3>
+        <p>{{ item.reason }}</p>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
