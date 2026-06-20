@@ -73,7 +73,11 @@ uvicorn app.main:app --reload
 
 La app ya incluye un banco inicial de 36 preguntas RIASEC en `app/data/questions.py`, distribuido en 6 preguntas por dimensión: Realista, Investigativo, Artístico, Social, Emprendedor y Convencional.
 
-La ruta `/test` muestra todas las preguntas en una sola pantalla, agrupadas por dimensión y con escala Likert de 1 a 5. En esta etapa las respuestas todavía no se guardan, no se calcula resultado y no se crea lógica adicional de base de datos para el test.
+La ruta `/test` muestra todas las preguntas en una sola pantalla, agrupadas por dimensión y con escala Likert de 1 a 5. El formulario permite responder las 36 preguntas obligatorias, enviar las respuestas con `POST /test` y ver un resultado RIASEC calculado en base a los valores elegidos.
+
+El sistema calcula puntajes reales por dimensión, convierte cada puntaje a porcentaje sobre un máximo de 30 puntos, ordena las dimensiones principales y arma un código vocacional de 3 letras. Por ahora las recomendaciones de carreras son una lista temporal basada en la dimensión principal.
+
+En esta etapa las respuestas todavía no se guardan en base de datos y no se crea lógica adicional de persistencia para el test.
 
 ## Base de datos
 
@@ -95,4 +99,4 @@ El archivo `render.yaml` incluye una configuración inicial para:
 
 ## Estado actual
 
-Incluye la base funcional inicial y el banco inicial de preguntas RIASEC. Todavía no contiene guardado de respuestas del test, cálculo real de resultados, login real ni machine learning.
+Incluye la base funcional inicial, el banco de 36 preguntas RIASEC, el formulario completo en `/test` y el cálculo real de scoring RIASEC en memoria. Todavía no contiene guardado de respuestas del test en base de datos, login real ni machine learning.

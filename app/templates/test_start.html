@@ -4,7 +4,7 @@
 <section class="panel test-panel">
   <p class="eyebrow">Test vocacional RIASEC</p>
   <h1>Explora tus intereses vocacionales</h1>
-  <p class="lead">Responde cada afirmación usando la escala de interés. Por ahora esta pantalla solo muestra el banco inicial de preguntas; el guardado de respuestas y el cálculo de resultados se agregarán en próximos pasos.</p>
+  <p class="lead">Respondé cada afirmación usando la escala de interés. Al finalizar, calcularemos tu perfil RIASEC en base a tus respuestas.</p>
 
   <div class="scale-help" aria-label="Escala de respuestas">
     {% for value, label in likert_options %}
@@ -12,7 +12,11 @@
     {% endfor %}
   </div>
 
-  <form class="question-form" action="/test" method="get">
+  {% if error %}
+    <div class="error-message" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <form class="question-form" action="/test" method="post">
     {% for group in grouped_questions %}
       <section class="dimension-section" aria-labelledby="dimension-{{ group.code }}">
         <div class="dimension-heading">
@@ -34,7 +38,7 @@
                 <legend>Selecciona una opción</legend>
                 {% for value, label in likert_options %}
                   <label>
-                    <input type="radio" name="{{ question.id }}" value="{{ value }}">
+                    <input type="radio" name="{{ question.id }}" value="{{ value }}" required>
                     <span>{{ value }}</span>
                     <small>{{ label }}</small>
                   </label>
@@ -48,7 +52,7 @@
 
     <div class="test-actions">
       <p>No se guardarán respuestas en esta versión.</p>
-      <a class="button secondary" href="/resultado/demo">Ver resultado de ejemplo</a>
+      <button class="button" type="submit">Ver mi resultado</button>
     </div>
   </form>
 </section>
