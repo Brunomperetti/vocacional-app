@@ -36,3 +36,12 @@ def test_scoring_service_processes_complete_answers():
 if __name__ == "__main__":
     test_scoring_service_processes_complete_answers()
     print("Scoring service smoke test passed.")
+
+
+def test_scoring_service_accepts_36_answers():
+    answers = {question["id"]: "4" for question in TEST_QUESTIONS}
+
+    scores = calculate_riasec_scores(answers)
+
+    assert len(answers) == 36
+    assert scores == {"R": 24, "I": 24, "A": 24, "S": 24, "E": 24, "C": 24}

@@ -1,7 +1,10 @@
 """Punto de entrada de FastAPI para vocacional-app."""
 
+import os
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.sessions import SessionMiddleware
 
 from app.database import Base, engine
 from app.routes import admin, public, results, test
@@ -12,6 +15,11 @@ app = FastAPI(
     title="vocacional-app",
     description="Plataforma online de orientación vocacional con scoring RIASEC.",
     version="0.1.0",
+)
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET", "dev-session-secret-change-me"),
 )
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")

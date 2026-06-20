@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Paso {{ step }} de {{ total_steps }} - {{ dimension_name }} | vocacional-app{% endblock %}
+{% block content %}
+<section class="panel test-panel">
+  <p class="eyebrow">Test vocacional RIASEC</p>
+  <div class="step-header">
+    <div>
+      <h1>{{ dimension_name }}</h1>
+      <p class="lead">{{ dimension_description }}</p>
+    </div>
+    <span class="dimension-code">{{ dimension_code }}</span>
+  </div>
+
+  <div class="progress-block" aria-label="Progreso del test">
+    <div class="progress-meta">
+      <strong>Paso {{ step }} de {{ total_steps }}</strong>
+      <span>{{ progress_percentage }}%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width: {{ progress_percentage }}%"></div></div>
+  </div>
+
+  <p class="test-note">Respondé según lo que más te representa hoy, no según lo que otros esperan de vos.</p>
+
+  {% if error %}
+    <div class="error-message" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <form class="question-form" action="/test/paso/{{ step }}" method="post">
+    <div class="question-list">
+      {% for question in questions %}
+        <article class="question-card">
+          <div class="question-text">
+            <span class="question-id">{{ question.id }}</span>
+            <p>{{ question.text }}</p>
+          </div>
+          <fieldset class="likert-options likert-buttons" aria-label="Respuesta para {{ question.id }}">
+            <legend>Seleccioná una opción</legend>
+            {% for value, label in likert_options %}
+              <label>
+                <input type="radio" name="{{ question.id }}" value="{{ value }}" {% if answers.get(question.id) == value|string %}checked{% endif %} required>
+                <span>{{ value }}</span>
+                <small>{{ label }}</small>
+              </label>
+            {% endfor %}
+          </fieldset>
+        </article>
+      {% endfor %}
+    </div>
+
+    <div class="test-actions wizard-actions">
+      <div>
+        {% if previous_step %}
+          <a class="button secondary" href="/test/paso/{{ previous_step }}">Volver</a>
+        {% endif %}
+      </div>
+      <button class="button" type="submit">{{ next_label }}</button>
+    </div>
+  </form>
+</section>
+{% endblock %}
