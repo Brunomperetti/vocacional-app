@@ -11,6 +11,8 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
+from app.services.settings_service import get_app_name
+
 from reportlab.platypus import (
     HRFlowable,
     ListFlowable,
@@ -26,7 +28,6 @@ DISCLAIMER = (
     "Este informe es una orientación inicial basada en las respuestas del test. "
     "No reemplaza una evaluación profesional ni define una única carrera posible."
 )
-PROJECT_NAME = "vocacional-app"
 
 
 def _safe_text(value: object, default: str = "No informado") -> str:
@@ -68,7 +69,7 @@ def generate_result_pdf(result_data: dict) -> bytes:
         topMargin=1.5 * cm,
         bottomMargin=1.5 * cm,
         title="Informe de orientación vocacional",
-        author=PROJECT_NAME,
+        author=get_app_name(),
     )
 
     base_styles = getSampleStyleSheet()
@@ -124,7 +125,7 @@ def generate_result_pdf(result_data: dict) -> bytes:
     careers = (result_data.get("recommended_careers") or [])[:6]
 
     story = [
-        Paragraph(PROJECT_NAME, styles["Subtitle"]),
+        Paragraph(_safe_text(get_app_name()), styles["Subtitle"]),
         Paragraph("Informe de orientación vocacional", styles["Title"]),
         Paragraph(
             f"Fecha de generación: {datetime.now().strftime('%d/%m/%Y')}",

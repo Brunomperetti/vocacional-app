@@ -11,7 +11,7 @@ from app.services.pdf_report_service import generate_result_pdf
 from app.services.profile_summary_service import build_result_insights
 from app.services.recommendation_service import get_demo_recommendations
 from app.services.result_builder_service import build_result_from_session_data
-from app.services.settings_service import get_donation_url, get_public_app_url
+from app.services.settings_service import get_app_name, get_donation_url, get_public_app_url
 from app.services.scoring_service import (
     build_profile_code,
     get_demo_riasec_scores,
@@ -19,6 +19,7 @@ from app.services.scoring_service import (
 )
 
 templates = Jinja2Templates(directory="app/templates")
+templates.env.globals["get_app_name"] = get_app_name
 router = APIRouter(prefix="/resultado", tags=["results"])
 
 

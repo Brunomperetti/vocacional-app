@@ -1,6 +1,6 @@
-# vocacional-app
+# Vocación360
 
-Base inicial de una plataforma online de orientación vocacional para estudiantes. La aplicación está preparada para crecer hacia un test con preguntas, scoring RIASEC y recomendación de carreras.
+Vocación360 es la base inicial de una plataforma online de orientación vocacional para estudiantes. La aplicación está preparada para crecer hacia un test con preguntas, scoring RIASEC y recomendación de carreras.
 
 ## Stack
 
@@ -55,6 +55,8 @@ cp .env.example .env
 
 Si `DATABASE_URL` no está definida, la app usa SQLite local en `vocacional_dev.db`.
 
+`APP_NAME` permite configurar el nombre público usado en templates y en el informe PDF. Si no se define, el nombre público por default es `Vocación360`.
+
 También se puede configurar `DONATION_URL` con un link externo de aporte voluntario (por ejemplo, un link de Mercado Pago). Cuando esta variable existe, la app muestra un botón de colaboración en el resultado y un enlace discreto en el footer. El aporte es completamente opcional: el test y el resultado siguen siendo gratuitos y no se bloquea ninguna funcionalidad si la variable no está configurada.
 
 También se puede configurar `PUBLIC_APP_URL` con la URL pública de la aplicación (por ejemplo, la URL de Render). Si existe, se usa para armar el enlace compartido por WhatsApp; si se omite, la app usa la URL del request actual para apuntar a `/test`.
@@ -72,6 +74,8 @@ uvicorn app.main:app --reload
 - Landing: <http://127.0.0.1:8000/>
 - Inicio del test: <http://127.0.0.1:8000/test>
 - Resultado demo: <http://127.0.0.1:8000/resultado/demo>
+- Privacidad: <http://127.0.0.1:8000/privacidad>
+- Aviso legal: <http://127.0.0.1:8000/aviso-legal>
 - Admin con login: <http://127.0.0.1:8000/admin>
 - Health check: <http://127.0.0.1:8000/health>
 
@@ -95,7 +99,7 @@ Cuando una persona llega a un resultado real, el navegador guarda en `localStora
 
 Durante el wizard, las respuestas acumuladas y los datos iniciales opcionales del participante se guardan temporalmente en la sesión HTTP mediante `SessionMiddleware`; al finalizar el test se persisten en base de datos los datos del participante, consentimiento aceptado, respuestas individuales, porcentajes RIASEC, código vocacional, dimensiones principales, carreras recomendadas, insights y fecha de creación; `SESSION_SECRET` puede configurarse por variable de entorno y, si no existe, se usa un valor local de desarrollo. La navegación pública muestra solo el acceso al test y oculta accesos internos o demo como `/resultado/demo` y `/admin`, aunque esas rutas siguen disponibles si se accede directamente.
 
-La monetización voluntaria se controla con `DONATION_URL`: si se define, el resultado final y el footer muestran enlaces a una página externa de aporte; si se omite, esos elementos no se renderizan y la aplicación funciona igual. No hay integración con API de pagos, checkout interno, pagos obligatorios, guardado de datos de pago, login ni base de datos adicional para esta funcionalidad.
+El footer público incluye enlaces a `/privacidad` y `/aviso-legal` para informar el uso de datos y las aclaraciones principales de la herramienta. La monetización voluntaria se controla con `DONATION_URL`: si se define, el resultado final y el footer muestran enlaces a una página externa de aporte; si se omite, esos elementos no se renderizan y la aplicación funciona igual. No hay integración con API de pagos, checkout interno, pagos obligatorios, guardado de datos de pago, login ni base de datos adicional para esta funcionalidad.
 
 El admin en `/admin` no aparece en la navegación pública y requiere login con `ADMIN_USERNAME` y `ADMIN_PASSWORD`. Muestra métricas básicas desde la base de datos: total de tests completados y últimos 10 resultados con nombre, WhatsApp, código, fecha y situación actual. Desde cada fila permite abrir el detalle completo del resultado guardado, incluyendo datos del participante, consentimiento, scoring RIASEC, top de dimensiones, carreras recomendadas, datos técnicos y respuestas individuales. También permite exportar todos los resultados a CSV desde `/admin/export.csv` para análisis externo. Si las credenciales no están configuradas, el admin muestra un aviso claro y no permite acceder al dashboard.
 

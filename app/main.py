@@ -1,4 +1,4 @@
-"""Punto de entrada de FastAPI para vocacional-app."""
+"""Punto de entrada de FastAPI para Vocación360."""
 
 import os
 
@@ -13,7 +13,7 @@ from app.routes import admin, public, results, test
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="vocacional-app",
+    title=os.getenv("APP_NAME", "Vocación360"),
     description="Plataforma online de orientación vocacional con scoring RIASEC.",
     version="0.1.0",
 )

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{% if is_demo %}Resultado demo{% else %}Tu resultado vocacional{% endif %} | vocacional-app{% endblock %}
+{% block title %}{% if is_demo %}Resultado demo{% else %}Tu resultado vocacional{% endif %} | {{ get_app_name() }}{% endblock %}
 {% block content %}
 <section class="panel result-page">
   <p class="eyebrow">{% if is_demo %}Resultado vocacional demo{% else %}Resultado vocacional RIASEC{% endif %}</p>

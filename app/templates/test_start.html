@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Test vocacional RIASEC | vocacional-app{% endblock %}
+{% block title %}Test vocacional RIASEC | {{ get_app_name() }}{% endblock %}
 {% block content %}
 <section class="panel test-panel test-intro">
   <p class="eyebrow">Test vocacional RIASEC</p>
   <h1>Descubrí tu perfil vocacional en 6 etapas</h1>
-  <p class="lead">Este test te ayuda a explorar intereses Realistas, Investigativos, Artísticos, Sociales, Emprendedores y Convencionales. En lugar de responder todo junto, vas a avanzar paso a paso.</p>
+  <p class="lead">Este test te ayuda a explorar intereses Realistas, Investigativos, Artísticos, Sociales, Emprendedores y Convencionales. No hay respuestas correctas o incorrectas: lo importante es responder según lo que más te representa hoy.</p>
 
   <div class="wizard-summary" aria-label="Etapas del test">
     {% for step, code in step_dimensions.items() %}
@@ -26,7 +26,7 @@
     Ya completaste el test recientemente. Para que el resultado sea más útil, te recomendamos no repetirlo muchas veces en poco tiempo. Si querés, podés volver a hacerlo.
   </div>
 
-  <p class="test-note">Respondé según lo que más te representa hoy, no según lo que otros esperan de vos.</p>
+  <p class="test-note">Respondé según lo que más te representa hoy, no según lo que otros esperan de vos ni según lo que creés que deberías elegir.</p>
 
   <form class="participant-form" action="/test/iniciar" method="post">
     <div>
@@ -65,7 +65,7 @@
 
     <label class="consent-check form-grid-wide">
       <input type="checkbox" name="consent_accepted" required {% if participant.get('consent_accepted') %}checked{% endif %}>
-      <span>Acepto que mis datos y respuestas sean guardados para generar mi resultado vocacional, mejorar la herramienta y permitir el seguimiento del proyecto.</span>
+      <span>Acepto que mis datos y respuestas sean guardados para generar mi resultado vocacional, mejorar la herramienta y administrar el proyecto. Leí y acepto la <a href="/privacidad" target="_blank" rel="noopener noreferrer">política de privacidad</a>.</span>
     </label>
     <p class="test-note">El test sigue siendo gratuito. Tus datos no se muestran públicamente.</p>
 
