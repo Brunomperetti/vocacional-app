@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.database import Base, engine
+from app import models  # noqa: F401 - registra modelos ORM antes de crear tablas
 from app.routes import admin, public, results, test
 
 Base.metadata.create_all(bind=engine)
