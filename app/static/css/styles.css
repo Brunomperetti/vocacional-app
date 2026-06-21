@@ -165,3 +165,18 @@ h2 { margin-top: 2rem; }
 .admin-session-bar span { font-weight: 800; }
 .admin-session-bar a { color: var(--primary); font-weight: 800; }
 .admin-login-panel .participant-form { margin-top: 1.5rem; }
+.button.secondary { background: #eef2ff; color: var(--primary); }
+.table-wrapper { overflow-x: auto; }
+.admin-results-table { border-collapse: separate; border-spacing: 0; min-width: 760px; width: 100%; }
+.admin-results-table th, .admin-results-table td { border-bottom: 1px solid var(--border); padding: .85rem 1rem; text-align: left; vertical-align: top; }
+.admin-results-table th { background: #f8fafc; color: var(--text); font-size: .9rem; }
+.table-action { color: var(--primary); font-weight: 800; white-space: nowrap; }
+.detail-header { align-items: flex-start; display: flex; gap: 1rem; justify-content: space-between; margin-bottom: 1.5rem; }
+.detail-grid { display: grid; gap: .75rem 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.detail-grid p { background: #f8fafc; border-radius: 12px; margin: 0; padding: .85rem; }
+.detail-grid-wide { grid-column: 1 / -1; overflow-wrap: anywhere; }
+.score-grid { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); margin-bottom: 1.5rem; }
+.score-card { background: #eef2ff; border-radius: 16px; padding: 1rem; text-align: center; }
+.score-card strong { display: block; font-size: 1.2rem; }
+.score-card span { color: var(--primary); font-weight: 900; }
+@media (max-width: 720px) { .detail-header { flex-direction: column; } }

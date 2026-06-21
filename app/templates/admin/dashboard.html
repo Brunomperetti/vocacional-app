@@ -9,6 +9,7 @@
   <p class="eyebrow">Administración</p>
   <h1>Dashboard básico</h1>
   <p>Panel con métricas mínimas de tests completados.</p>
+  <p><a class="button" href="/admin/export.csv">Exportar CSV</a></p>
 
   {% if db_error %}
     <div class="error-message" role="alert"><p>{{ db_error }}</p></div>
@@ -17,13 +18,13 @@
   <div class="cards">
     <article class="card"><h2>{{ total_results }}</h2><p>Tests completados guardados en base de datos.</p></article>
     <article class="card"><h2>Carreras</h2><p>Próximamente: catálogo de carreras recomendables.</p></article>
-    <article class="card"><h2>Reportes</h2><p>Próximamente: métricas agregadas y exportaciones.</p></article>
+    <article class="card"><h2>Reportes</h2><p>Exportá resultados completos para análisis externo.</p></article>
   </div>
 
   <h2>Últimos 10 resultados</h2>
   {% if latest_results %}
     <div class="table-wrapper">
-      <table>
+      <table class="admin-results-table">
         <thead>
           <tr>
             <th>Fecha</th>
@@ -31,6 +32,7 @@
             <th>WhatsApp</th>
             <th>Código</th>
             <th>Situación actual</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -41,6 +43,7 @@
               <td>{{ result.whatsapp or '—' }}</td>
               <td>{{ result.profile_code }}</td>
               <td>{{ result.current_status or '—' }}</td>
+              <td><a class="table-action" href="/admin/results/{{ result.id }}">Ver detalle</a></td>
             </tr>
           {% endfor %}
         </tbody>
