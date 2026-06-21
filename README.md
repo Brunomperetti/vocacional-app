@@ -59,6 +59,8 @@ También se puede configurar `DONATION_URL` con un link externo de aporte volunt
 
 También se puede configurar `PUBLIC_APP_URL` con la URL pública de la aplicación (por ejemplo, la URL de Render). Si existe, se usa para armar el enlace compartido por WhatsApp; si se omite, la app usa la URL del request actual para apuntar a `/test`.
 
+El panel `/admin` requiere login y se protege con las variables de entorno `ADMIN_USERNAME` y `ADMIN_PASSWORD`. No hay credenciales hardcodeadas ni usuarios en base de datos todavía. Si alguna de estas variables falta, el formulario informa que el acceso admin no está configurado y no permite ingresar. En Render deben agregarse desde **Environment Variables** junto con el resto de la configuración del servicio.
+
 4. Ejecutar la aplicación:
 
 ```bash
@@ -70,7 +72,7 @@ uvicorn app.main:app --reload
 - Landing: <http://127.0.0.1:8000/>
 - Inicio del test: <http://127.0.0.1:8000/test>
 - Resultado demo: <http://127.0.0.1:8000/resultado/demo>
-- Admin temporal: <http://127.0.0.1:8000/admin>
+- Admin con login: <http://127.0.0.1:8000/admin>
 - Health check: <http://127.0.0.1:8000/health>
 
 ## Banco inicial de preguntas RIASEC
@@ -95,7 +97,7 @@ Durante el wizard, las respuestas acumuladas y los datos iniciales opcionales de
 
 La monetización voluntaria se controla con `DONATION_URL`: si se define, el resultado final y el footer muestran enlaces a una página externa de aporte; si se omite, esos elementos no se renderizan y la aplicación funciona igual. No hay integración con API de pagos, checkout interno, pagos obligatorios, guardado de datos de pago, login ni base de datos adicional para esta funcionalidad.
 
-El admin temporal en `/admin` no aparece en la navegación pública y muestra métricas básicas desde la base de datos: total de tests completados y últimos 10 resultados con nombre, WhatsApp, código, fecha y situación actual. Todavía falta implementar login real para proteger el admin antes de usarlo como herramienta operativa.
+El admin en `/admin` no aparece en la navegación pública y requiere login con `ADMIN_USERNAME` y `ADMIN_PASSWORD`. Muestra métricas básicas desde la base de datos: total de tests completados y últimos 10 resultados con nombre, WhatsApp, código, fecha y situación actual. Si las credenciales no están configuradas, el admin muestra un aviso claro y no permite acceder al dashboard.
 
 ## Base de datos
 
@@ -114,4 +116,4 @@ El archivo `render.yaml` incluye una configuración inicial para:
 
 ## Estado actual
 
-Incluye la base funcional inicial, el banco de 36 preguntas RIASEC, el test por etapas desde `/test`, consentimiento obligatorio, persistencia de resultados completos en base de datos, cálculo real de scoring RIASEC, insights interpretativos y recomendación inicial de carreras por compatibilidad RIASEC. Todavía no contiene login real, migraciones Alembic ni machine learning.
+Incluye la base funcional inicial, el banco de 36 preguntas RIASEC, el test por etapas desde `/test`, consentimiento obligatorio, persistencia de resultados completos en base de datos, cálculo real de scoring RIASEC, insights interpretativos, recomendación inicial de carreras por compatibilidad RIASEC y login simple para `/admin` mediante variables de entorno. Todavía no contiene usuarios en base de datos, migraciones Alembic ni machine learning.

@@ -1,8 +1,33 @@
 {% extends "base.html" %}
-{% block title %}Admin login | vocacional-app{% endblock %}
+{% block title %}Acceso administrador | vocacional-app{% endblock %}
 {% block content %}
-<section class="panel narrow">
-  <h1>Login administrativo</h1>
-  <p>Login real pendiente de implementación.</p>
+<section class="panel narrow admin-login-panel">
+  <p class="eyebrow">Administración</p>
+  <h1>Acceso administrador</h1>
+  <p>Ingresá con las credenciales configuradas para consultar el dashboard.</p>
+
+  {% if config_message %}
+    <div class="error-message" role="alert"><p>{{ config_message }}</p></div>
+  {% endif %}
+
+  {% if error %}
+    <div class="error-message" role="alert"><p>{{ error }}</p></div>
+  {% endif %}
+
+  <form class="participant-form" method="post" action="/admin/login">
+    <div class="form-grid">
+      <label for="username">
+        Usuario
+        <input id="username" name="username" type="text" autocomplete="username" required>
+      </label>
+      <label for="password">
+        Contraseña
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+      </label>
+    </div>
+    <div class="test-actions">
+      <button class="button" type="submit">Ingresar</button>
+    </div>
+  </form>
 </section>
 {% endblock %}

@@ -161,3 +161,7 @@ h2 { margin-top: 2rem; }
 .participant-card { background: #f8fafc; }
 .participant-meta { display: flex; flex-wrap: wrap; gap: .75rem; }
 .participant-meta span { background: #eef2ff; border-radius: 999px; color: var(--text); padding: .55rem .8rem; }
+.admin-session-bar { align-items: center; color: var(--muted); display: flex; font-size: .95rem; gap: 1rem; justify-content: space-between; margin-bottom: 1.5rem; }
+.admin-session-bar span { font-weight: 800; }
+.admin-session-bar a { color: var(--primary); font-weight: 800; }
+.admin-login-panel .participant-form { margin-top: 1.5rem; }
