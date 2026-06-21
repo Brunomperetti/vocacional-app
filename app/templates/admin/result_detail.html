@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Detalle del resultado | vocacional-app{% endblock %}
+{% block content %}
+<section class="panel admin-detail-panel">
+  <div class="admin-session-bar">
+    <span>Sesión administrador</span>
+    <a href="/admin/logout">Cerrar sesión</a>
+  </div>
+
+  <p class="eyebrow">Administración</p>
+  <div class="detail-header">
+    <div>
+      <h1>Detalle del resultado</h1>
+      <p>Fecha del test: {{ result.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+      <p>Código vocacional: <strong>{{ result.profile_code }}</strong></p>
+    </div>
+    <a class="button secondary" href="/admin">Volver al dashboard</a>
+  </div>
+
+  <h2>Datos del participante</h2>
+  <div class="detail-grid">
+    <p><strong>Nombre:</strong> {{ result.name or 'Sin nombre' }}</p>
+    <p><strong>WhatsApp:</strong> {{ result.whatsapp or '—' }}</p>
+    <p><strong>Edad:</strong> {{ result.age or '—' }}</p>
+    <p><strong>Situación actual:</strong> {{ result.current_status or '—' }}</p>
+    <p><strong>Ubicación:</strong> {{ result.location or '—' }}</p>
+    <p><strong>Consentimiento aceptado:</strong> {{ 'Sí' if result.consent_accepted else 'No' }}</p>
+    <p class="detail-grid-wide"><strong>User agent:</strong> {{ result.user_agent or '—' }}</p>
+    <p><strong>IP:</strong> {{ result.ip_address or '—' }}</p>
+  </div>
+
+  <h2>Scoring RIASEC</h2>
+  <div class="score-grid">
+    {% for code in riasec_codes %}
+      <article class="score-card"><strong>{{ code }}</strong><span>{{ percentages.get(code, 0) }}%</span></article>
+    {% endfor %}
+  </div>
+
+  <h2>Top 3 dimensiones</h2>
+  {% if top_dimensions %}
+    <div class="table-wrapper">
+      <table class="admin-results-table">
+        <thead><tr><th>Dimensión</th><th>Nombre</th><th>Porcentaje</th><th>Descripción</th></tr></thead>
+        <tbody>
+          {% for dimension in top_dimensions %}
+            <tr>
+              <td>{{ dimension.code or dimension.get('code', '—') }}</td>
+              <td>{{ dimension.name or dimension.label or dimension.get('name', dimension.get('label', '—')) }}</td>
+              <td>{{ dimension.percentage or dimension.get('percentage', '—') }}%</td>
+              <td>{{ dimension.description or dimension.get('description', '—') }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}<p>No hay dimensiones disponibles.</p>{% endif %}
+
+  <h2>Carreras recomendadas</h2>
+  {% if recommended_careers %}
+    <div class="table-wrapper">
+      <table class="admin-results-table">
+        <thead><tr><th>Nombre</th><th>Compatibilidad</th><th>Área</th><th>Duración</th><th>Tipo de formación</th></tr></thead>
+        <tbody>
+          {% for career in recommended_careers %}
+            <tr>
+              <td>{{ career.name or career.get('name', '—') }}</td>
+              <td>{{ career.match_percentage or career.get('match_percentage', '—') }}%</td>
+              <td>{{ career.area or career.get('area', '—') }}</td>
+              <td>{{ career.duration or career.get('duration', '—') }}</td>
+              <td>{{ career.study_type or career.get('study_type', '—') }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}<p>No hay carreras recomendadas disponibles.</p>{% endif %}
+
+  <h2>Respuestas</h2>
+  {% if answers %}
+    <div class="table-wrapper">
+      <table class="admin-results-table">
+        <thead><tr><th>Pregunta ID</th><th>Dimensión</th><th>Valor</th></tr></thead>
+        <tbody>
+          {% for answer in answers %}
+            <tr><td>{{ answer.question_id }}</td><td>{{ answer.dimension }}</td><td>{{ answer.value }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}<p>No hay respuestas asociadas.</p>{% endif %}
+</section>
+{% endblock %}

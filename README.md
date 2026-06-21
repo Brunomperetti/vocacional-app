@@ -97,7 +97,7 @@ Durante el wizard, las respuestas acumuladas y los datos iniciales opcionales de
 
 La monetización voluntaria se controla con `DONATION_URL`: si se define, el resultado final y el footer muestran enlaces a una página externa de aporte; si se omite, esos elementos no se renderizan y la aplicación funciona igual. No hay integración con API de pagos, checkout interno, pagos obligatorios, guardado de datos de pago, login ni base de datos adicional para esta funcionalidad.
 
-El admin en `/admin` no aparece en la navegación pública y requiere login con `ADMIN_USERNAME` y `ADMIN_PASSWORD`. Muestra métricas básicas desde la base de datos: total de tests completados y últimos 10 resultados con nombre, WhatsApp, código, fecha y situación actual. Si las credenciales no están configuradas, el admin muestra un aviso claro y no permite acceder al dashboard.
+El admin en `/admin` no aparece en la navegación pública y requiere login con `ADMIN_USERNAME` y `ADMIN_PASSWORD`. Muestra métricas básicas desde la base de datos: total de tests completados y últimos 10 resultados con nombre, WhatsApp, código, fecha y situación actual. Desde cada fila permite abrir el detalle completo del resultado guardado, incluyendo datos del participante, consentimiento, scoring RIASEC, top de dimensiones, carreras recomendadas, datos técnicos y respuestas individuales. También permite exportar todos los resultados a CSV desde `/admin/export.csv` para análisis externo. Si las credenciales no están configuradas, el admin muestra un aviso claro y no permite acceder al dashboard.
 
 ## Base de datos
 
@@ -116,4 +116,4 @@ El archivo `render.yaml` incluye una configuración inicial para:
 
 ## Estado actual
 
-Incluye la base funcional inicial, el banco de 36 preguntas RIASEC, el test por etapas desde `/test`, consentimiento obligatorio, persistencia de resultados completos en base de datos, cálculo real de scoring RIASEC, insights interpretativos, recomendación inicial de carreras por compatibilidad RIASEC y login simple para `/admin` mediante variables de entorno. Todavía no contiene usuarios en base de datos, migraciones Alembic ni machine learning.
+Incluye la base funcional inicial, el banco de 36 preguntas RIASEC, el test por etapas desde `/test`, consentimiento obligatorio, persistencia de resultados completos en base de datos, cálculo real de scoring RIASEC, insights interpretativos, recomendación inicial de carreras por compatibilidad RIASEC y login simple para `/admin` mediante variables de entorno, detalle administrativo de resultados y exportación CSV protegida. Todavía no contiene usuarios en base de datos, migraciones Alembic ni machine learning.
