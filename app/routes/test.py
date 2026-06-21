@@ -33,6 +33,7 @@ router = APIRouter(prefix="/test", tags=["test"])
 
 SESSION_ANSWERS_KEY = "answers"
 SESSION_PARTICIPANT_KEY = "participant"
+SESSION_LAST_RESULT_KEY = "last_result"
 LIKERT_OPTIONS = [
     (1, "No me interesa nada"),
     (2, "Me interesa poco"),
@@ -52,6 +53,16 @@ def _render_result(request: Request, answers: dict[str, str]) -> HTMLResponse:
     insights = build_result_insights(top_dimensions, profile_code, percentages, recommendations)
     participant = request.session.get(SESSION_PARTICIPANT_KEY, {})
     display_name = get_display_name(participant)
+    result_data = {
+        "participant": participant,
+        "display_name": display_name,
+        "percentages": percentages,
+        "top_dimensions": top_dimensions,
+        "profile_code": profile_code,
+        "insights": insights,
+        "recommended_careers": recommendations,
+    }
+    request.session[SESSION_LAST_RESULT_KEY] = result_data
 
     return templates.TemplateResponse(
         "result.html",

@@ -83,11 +83,13 @@ Las recomendaciones del resultado comparan el perfil RIASEC porcentual del usuar
 
 La pantalla final también incluye un resumen interpretativo del perfil, fortalezas principales, ambientes recomendados donde el estudiante podría rendir mejor y próximos pasos accionables para investigar carreras, comparar planes de estudio y conversar con referentes. Estos textos son orientativos, no clínicos, y acompañan la recomendación de carreras por compatibilidad RIASEC sin reemplazar una evaluación profesional.
 
+Desde la pantalla final, el usuario puede descargar un informe PDF del resultado con el código vocacional, resumen, scoring RIASEC, dimensiones principales, fortalezas, ambientes recomendados, hasta 6 carreras sugeridas y próximos pasos. El PDF se genera en memoria desde los datos del resultado guardados en la sesión actual (`request.session["last_result"]`) y se entrega desde `/resultado/pdf` como archivo descargable; no se guarda en disco.
+
 Durante el wizard, las respuestas acumuladas y los datos iniciales opcionales del participante se guardan temporalmente en la sesión HTTP mediante `SessionMiddleware`; `SESSION_SECRET` puede configurarse por variable de entorno y, si no existe, se usa un valor local de desarrollo. La navegación pública muestra solo el acceso al test y oculta accesos internos o demo como `/resultado/demo` y `/admin`, aunque esas rutas siguen disponibles si se accede directamente.
 
 La monetización voluntaria se controla con `DONATION_URL`: si se define, el resultado final y el footer muestran enlaces a una página externa de aporte; si se omite, esos elementos no se renderizan y la aplicación funciona igual. No hay integración con API de pagos, checkout interno, pagos obligatorios, guardado de datos de pago, login ni base de datos adicional para esta funcionalidad.
 
-En esta etapa las respuestas, los datos iniciales opcionales y los resultados todavía no se guardan en base de datos: solo viven en sesión mientras el usuario completa el test. No se crea lógica adicional de persistencia para el test.
+En esta etapa las respuestas, los datos iniciales opcionales y los resultados todavía no se guardan en base de datos: solo viven en sesión mientras el usuario completa el test. El informe PDF también depende de esa sesión actual y no queda almacenado en base de datos ni en archivos persistentes. No se crea lógica adicional de persistencia para el test.
 
 ## Base de datos
 
