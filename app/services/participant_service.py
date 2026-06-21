@@ -4,6 +4,7 @@ import re
 from collections.abc import Mapping
 
 PARTICIPANT_FIELDS = ("name", "whatsapp", "age", "current_status", "location")
+CONSENT_ERROR = "Para comenzar, necesitás aceptar el consentimiento de uso de datos."
 CURRENT_STATUS_OPTIONS = (
     "Estoy en secundaria",
     "Terminé la secundaria",
@@ -26,7 +27,7 @@ def normalize_whatsapp(value: str) -> str:
     return f"{prefix}{digits}"
 
 
-def clean_participant_data(form_data: Mapping[str, object]) -> dict[str, str]:
+def clean_participant_data(form_data: Mapping[str, object]) -> dict[str, str | bool]:
     """Devuelve los campos del participante como strings limpios y normalizados."""
     participant = {}
     for field in PARTICIPANT_FIELDS:
@@ -36,12 +37,18 @@ def clean_participant_data(form_data: Mapping[str, object]) -> dict[str, str]:
     whatsapp = participant.get("whatsapp", "")
     if whatsapp and _WHATSAPP_ALLOWED_PATTERN.match(whatsapp):
         participant["whatsapp"] = normalize_whatsapp(whatsapp)
+
+    consent_value = form_data.get("consent_accepted")
+    participant["consent_accepted"] = str(consent_value).lower() in {"1", "true", "on", "yes", "accepted"}
     return participant
 
 
-def validate_participant_data(participant: dict[str, str]) -> list[str]:
+def validate_participant_data(participant: dict[str, str | bool]) -> list[str]:
     """Valida solo los campos opcionales que fueron completados."""
     errors = []
+
+    if not participant.get("consent_accepted"):
+        errors.append(CONSENT_ERROR)
 
     whatsapp = participant.get("whatsapp", "")
     if whatsapp:

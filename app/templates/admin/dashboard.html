@@ -4,11 +4,46 @@
 <section class="panel">
   <p class="eyebrow">Administración temporal</p>
   <h1>Dashboard básico</h1>
-  <p>Panel inicial para futuras herramientas de gestión de preguntas, carreras y resultados.</p>
+  <p>Panel temporal con métricas mínimas de tests completados. Todavía falta implementar login real.</p>
+
+  {% if db_error %}
+    <div class="error-message" role="alert"><p>{{ db_error }}</p></div>
+  {% endif %}
+
   <div class="cards">
-    <article class="card"><h2>Preguntas</h2><p>Próximamente: ABM de preguntas del test.</p></article>
+    <article class="card"><h2>{{ total_results }}</h2><p>Tests completados guardados en base de datos.</p></article>
     <article class="card"><h2>Carreras</h2><p>Próximamente: catálogo de carreras recomendables.</p></article>
-    <article class="card"><h2>Reportes</h2><p>Próximamente: métricas y resultados agregados.</p></article>
+    <article class="card"><h2>Reportes</h2><p>Próximamente: métricas agregadas y exportaciones.</p></article>
   </div>
+
+  <h2>Últimos 10 resultados</h2>
+  {% if latest_results %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Nombre</th>
+            <th>WhatsApp</th>
+            <th>Código</th>
+            <th>Situación actual</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for result in latest_results %}
+            <tr>
+              <td>{{ result.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+              <td>{{ result.name or 'Sin nombre' }}</td>
+              <td>{{ result.whatsapp or '—' }}</td>
+              <td>{{ result.profile_code }}</td>
+              <td>{{ result.current_status or '—' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>No hay resultados guardados todavía.</p>
+  {% endif %}
 </section>
 {% endblock %}

@@ -2,17 +2,22 @@
 
 from urllib.parse import quote
 
-from fastapi import APIRouter, Request
+import logging
+
+from fastapi import APIRouter, Depends, Request
+from sqlalchemy.orm import Session
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from app.data.questions import TEST_QUESTIONS
+from app.database import get_db
 from app.services.participant_service import (
     CURRENT_STATUS_OPTIONS,
     clean_participant_data,
     validate_participant_data,
 )
 from app.services.result_builder_service import build_result_from_session_data
+from app.services.result_persistence_service import save_test_result
 from app.services.settings_service import get_donation_url, get_public_app_url
 from app.services.scoring_service import DIMENSION_LABELS
 from app.services.test_steps import (
@@ -24,6 +29,7 @@ from app.services.test_steps import (
 
 templates = Jinja2Templates(directory="app/templates")
 router = APIRouter(prefix="/test", tags=["test"])
+logger = logging.getLogger(__name__)
 
 SESSION_ANSWERS_KEY = "answers"
 SESSION_PARTICIPANT_KEY = "participant"
@@ -49,10 +55,18 @@ LIKERT_OPTIONS = [
 ]
 
 
-def _render_result(request: Request, answers: dict[str, str]) -> HTMLResponse:
+def _render_result(request: Request, answers: dict[str, str], db: Session | None = None) -> HTMLResponse:
     """Calcula y renderiza el resultado RIASEC final."""
     participant = request.session.get(SESSION_PARTICIPANT_KEY, {})
     result_data = build_result_from_session_data(participant, answers)
+
+    if db is not None:
+        try:
+            test_result = save_test_result(db, participant, answers, result_data, request=request)
+            request.session["last_result_id"] = test_result.id
+        except Exception:
+            logger.exception("No se pudo persistir el resultado del test vocacional.")
+            db.rollback()
 
     return templates.TemplateResponse(
         "result.html",
@@ -159,7 +173,7 @@ async def show_test_step(request: Request, step: int):
 
 
 @router.post("/paso/{step}", response_class=HTMLResponse)
-async def process_test_step(request: Request, step: int):
+async def process_test_step(request: Request, step: int, db: Session = Depends(get_db)):
     """Procesa un paso del test y avanza hasta calcular el resultado final."""
     if step not in STEP_DIMENSIONS:
         return RedirectResponse(url="/test", status_code=303)
@@ -220,4 +234,4 @@ async def process_test_step(request: Request, step: int):
             status_code=400,
         )
 
-    return _render_result(request, accumulated_answers)
+    return _render_result(request, accumulated_answers, db)

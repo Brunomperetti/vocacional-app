@@ -31,7 +31,7 @@
   <form class="participant-form" action="/test/iniciar" method="post">
     <div>
       <h2>Antes de comenzar</h2>
-      <p>Estos datos son opcionales y por ahora solo se usan para personalizar tu resultado.</p>
+      <p>Estos datos son opcionales y se usan para personalizar tu resultado y guardar el test completo.</p>
     </div>
 
     {% if errors %}
@@ -63,8 +63,14 @@
       </label>
     </div>
 
+    <label class="consent-check form-grid-wide">
+      <input type="checkbox" name="consent_accepted" required {% if participant.get('consent_accepted') %}checked{% endif %}>
+      <span>Acepto que mis datos y respuestas sean guardados para generar mi resultado vocacional, mejorar la herramienta y permitir el seguimiento del proyecto.</span>
+    </label>
+    <p class="test-note">El test sigue siendo gratuito. Tus datos no se muestran públicamente.</p>
+
     <div class="test-actions">
-      <p>Las respuestas y estos datos se guardan temporalmente en tu sesión mientras completás el test.</p>
+      <p>Las respuestas y estos datos se guardan para generar tu resultado y permitir que descargues tu informe.</p>
       <button class="button" type="submit">Comenzar test</button>
     </div>
   </form>
