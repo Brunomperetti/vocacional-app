@@ -2,9 +2,13 @@
 {% block title %}Admin | vocacional-app{% endblock %}
 {% block content %}
 <section class="panel">
-  <p class="eyebrow">Administración temporal</p>
+  <div class="admin-session-bar">
+    <span>Sesión administrador</span>
+    <a href="/admin/logout">Cerrar sesión</a>
+  </div>
+  <p class="eyebrow">Administración</p>
   <h1>Dashboard básico</h1>
-  <p>Panel temporal con métricas mínimas de tests completados. Todavía falta implementar login real.</p>
+  <p>Panel con métricas mínimas de tests completados.</p>
 
   {% if db_error %}
     <div class="error-message" role="alert"><p>{{ db_error }}</p></div>
