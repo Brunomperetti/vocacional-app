@@ -1,27 +1,31 @@
 {% extends "base.html" %}
-{% block title %}Inicio | vocacional-app{% endblock %}
+{% block title %}Inicio | {{ get_app_name() }}{% endblock %}
 {% block content %}
 <section class="hero">
   <div>
-    <p class="eyebrow">Orientación vocacional online</p>
-    <h1>Descubre carreras alineadas con tus intereses y fortalezas.</h1>
-    <p class="lead">vocacional-app será una plataforma para estudiantes basada en preguntas, scoring RIASEC y recomendaciones claras de carreras.</p>
-    <a class="button" href="/test">Comenzar test demo</a>
+    <p class="eyebrow">Test vocacional gratuito</p>
+    <h1>Descubrí qué estudiar con una orientación vocacional clara y gratuita</h1>
+    <p class="lead">{{ get_app_name() }} te ayuda a explorar tus intereses, conocer tu perfil RIASEC y recibir carreras recomendadas para empezar a tomar mejores decisiones.</p>
+    <a class="button" href="/test">Hacer el test gratis</a>
   </div>
 </section>
 
 <section class="cards">
   <article class="card">
-    <h2>Test guiado</h2>
-    <p>Una experiencia simple para responder preguntas vocacionales paso a paso.</p>
+    <h2>Test en 6 etapas</h2>
+    <p>Respondés 36 preguntas simples organizadas por intereses Realistas, Investigativos, Artísticos, Sociales, Emprendedores y Convencionales.</p>
   </article>
   <article class="card">
-    <h2>Scoring RIASEC</h2>
-    <p>Base preparada para calcular perfiles Realista, Investigador, Artístico, Social, Emprendedor y Convencional.</p>
+    <h2>Resultado personalizado</h2>
+    <p>Recibís un perfil con fortalezas, ambientes recomendados, carreras sugeridas y próximos pasos.</p>
   </article>
   <article class="card">
-    <h2>Recomendaciones</h2>
-    <p>Resultados pensados para conectar intereses personales con opciones académicas.</p>
+    <h2>Informe PDF</h2>
+    <p>Podés descargar tu informe para guardarlo o compartirlo con tu familia, colegio u orientador.</p>
+  </article>
+  <article class="card">
+    <h2>Gratuito y con aporte voluntario</h2>
+    <p>El test es gratuito. Si te resulta útil, podés apoyar el proyecto de forma voluntaria.</p>
   </article>
 </section>
 {% endblock %}

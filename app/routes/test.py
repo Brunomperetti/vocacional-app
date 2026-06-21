@@ -18,7 +18,7 @@ from app.services.participant_service import (
 )
 from app.services.result_builder_service import build_result_from_session_data
 from app.services.result_persistence_service import save_test_result
-from app.services.settings_service import get_donation_url, get_public_app_url
+from app.services.settings_service import get_app_name, get_donation_url, get_public_app_url
 from app.services.scoring_service import DIMENSION_LABELS
 from app.services.test_steps import (
     STEP_DIMENSIONS,
@@ -28,6 +28,7 @@ from app.services.test_steps import (
 )
 
 templates = Jinja2Templates(directory="app/templates")
+templates.env.globals["get_app_name"] = get_app_name
 router = APIRouter(prefix="/test", tags=["test"])
 logger = logging.getLogger(__name__)
 

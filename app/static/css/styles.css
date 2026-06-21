@@ -180,3 +180,5 @@ h2 { margin-top: 2rem; }
 .score-card strong { display: block; font-size: 1.2rem; }
 .score-card span { color: var(--primary); font-weight: 900; }
 @media (max-width: 720px) { .detail-header { flex-direction: column; } }
+.footer-links { align-items: center; display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; }
+.footer-links a { color: var(--primary); font-weight: 800; }

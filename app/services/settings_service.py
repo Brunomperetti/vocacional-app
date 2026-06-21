@@ -13,3 +13,8 @@ def get_public_app_url() -> str | None:
     """Devuelve la URL pública de la app si está configurada."""
     public_app_url = os.getenv("PUBLIC_APP_URL", "").strip().rstrip("/")
     return public_app_url or None
+
+
+def get_app_name() -> str:
+    """Devuelve el nombre público configurable de la aplicación."""
+    return os.getenv("APP_NAME", "").strip() or "Vocación360"

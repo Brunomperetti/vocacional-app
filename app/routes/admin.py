@@ -19,6 +19,7 @@ from app.auth import (
 from app.database import get_db
 from app.models import TestResult
 from app.services.admin_service import safe_json_loads
+from app.services.settings_service import get_app_name
 
 ADMIN_CONFIG_MESSAGE = (
     "El acceso admin todavía no está configurado. Definí ADMIN_USERNAME y "
@@ -27,6 +28,7 @@ ADMIN_CONFIG_MESSAGE = (
 RIASEC_CODES = ("R", "I", "A", "S", "E", "C")
 
 templates = Jinja2Templates(directory="app/templates")
+templates.env.globals["get_app_name"] = get_app_name
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 

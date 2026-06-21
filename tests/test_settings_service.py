@@ -40,3 +40,26 @@ def test_get_public_app_url_trims_spaces_and_trailing_slash(monkeypatch):
     monkeypatch.setenv("PUBLIC_APP_URL", " https://vocacional-app.onrender.com/ ")
 
     assert get_public_app_url() == "https://vocacional-app.onrender.com"
+
+
+def test_get_app_name_returns_default_when_missing(monkeypatch):
+    from app.services.settings_service import get_app_name
+
+    monkeypatch.delenv("APP_NAME", raising=False)
+
+    assert get_app_name() == "Vocación360"
+
+
+def test_get_app_name_returns_configured_name(monkeypatch):
+    from app.services.settings_service import get_app_name
+
+    monkeypatch.setenv("APP_NAME", "Mi Test Vocacional")
+
+    assert get_app_name() == "Mi Test Vocacional"
+
+
+def test_base_template_uses_dynamic_app_name_in_header():
+    html = Path("app/templates/base.html").read_text()
+
+    assert '{{ get_app_name() }}' in html
+    assert 'class="brand" href="/">{{ get_app_name() }}</a>' in html
