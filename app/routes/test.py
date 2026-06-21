@@ -8,19 +8,11 @@ from app.data.questions import TEST_QUESTIONS
 from app.services.participant_service import (
     CURRENT_STATUS_OPTIONS,
     clean_participant_data,
-    get_display_name,
     validate_participant_data,
 )
-from app.services.profile_summary_service import build_result_insights
-from app.services.recommendation_service import recommend_careers
+from app.services.result_builder_service import build_result_from_session_data
 from app.services.settings_service import get_donation_url
-from app.services.scoring_service import (
-    DIMENSION_LABELS,
-    build_profile_code,
-    calculate_riasec_percentages,
-    calculate_riasec_scores,
-    get_top_dimensions,
-)
+from app.services.scoring_service import DIMENSION_LABELS
 from app.services.test_steps import (
     STEP_DIMENSIONS,
     TOTAL_STEPS,
@@ -33,7 +25,6 @@ router = APIRouter(prefix="/test", tags=["test"])
 
 SESSION_ANSWERS_KEY = "answers"
 SESSION_PARTICIPANT_KEY = "participant"
-SESSION_LAST_RESULT_KEY = "last_result"
 LIKERT_OPTIONS = [
     (1, "No me interesa nada"),
     (2, "Me interesa poco"),
@@ -45,37 +36,21 @@ LIKERT_OPTIONS = [
 
 def _render_result(request: Request, answers: dict[str, str]) -> HTMLResponse:
     """Calcula y renderiza el resultado RIASEC final."""
-    scores = calculate_riasec_scores(answers)
-    percentages = calculate_riasec_percentages(scores)
-    top_dimensions = get_top_dimensions(percentages)
-    profile_code = build_profile_code(top_dimensions)
-    recommendations = recommend_careers(percentages)
-    insights = build_result_insights(top_dimensions, profile_code, percentages, recommendations)
     participant = request.session.get(SESSION_PARTICIPANT_KEY, {})
-    display_name = get_display_name(participant)
-    result_data = {
-        "participant": participant,
-        "display_name": display_name,
-        "percentages": percentages,
-        "top_dimensions": top_dimensions,
-        "profile_code": profile_code,
-        "insights": insights,
-        "recommended_careers": recommendations,
-    }
-    request.session[SESSION_LAST_RESULT_KEY] = result_data
+    result_data = build_result_from_session_data(participant, answers)
 
     return templates.TemplateResponse(
         "result.html",
         {
             "request": request,
-            "scores": percentages,
-            "top_dimensions": top_dimensions,
-            "profile_code": profile_code,
-            "recommendations": recommendations,
-            "insights": insights,
+            "scores": result_data["percentages"],
+            "top_dimensions": result_data["top_dimensions"],
+            "profile_code": result_data["profile_code"],
+            "recommendations": result_data["recommended_careers"],
+            "insights": result_data["insights"],
             "is_demo": False,
-            "participant": participant,
-            "display_name": display_name,
+            "participant": result_data["participant"],
+            "display_name": result_data["display_name"],
             "donation_url": get_donation_url(),
         },
     )
@@ -229,5 +204,4 @@ async def process_test_step(request: Request, step: int):
             status_code=400,
         )
 
-    request.session.pop(SESSION_ANSWERS_KEY, None)
     return _render_result(request, accumulated_answers)

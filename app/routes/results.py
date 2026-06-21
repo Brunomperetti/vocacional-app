@@ -8,6 +8,7 @@ from app.services.participant_service import get_display_name
 from app.services.pdf_report_service import generate_result_pdf
 from app.services.profile_summary_service import build_result_insights
 from app.services.recommendation_service import get_demo_recommendations
+from app.services.result_builder_service import build_result_from_session_data
 from app.services.settings_service import get_donation_url
 from app.services.scoring_service import (
     build_profile_code,
@@ -21,9 +22,13 @@ router = APIRouter(prefix="/resultado", tags=["results"])
 
 @router.get("/pdf")
 async def download_result_pdf(request: Request):
-    """Descarga el último resultado vocacional de la sesión como PDF."""
-    result_data = request.session.get("last_result")
-    if not result_data:
+    """Reconstruye y descarga el resultado vocacional de la sesión como PDF."""
+    participant = request.session.get("participant")
+    answers = request.session.get("answers")
+
+    try:
+        result_data = build_result_from_session_data(participant, answers)
+    except ValueError:
         return RedirectResponse(url="/test", status_code=303)
 
     pdf_bytes = generate_result_pdf(result_data)
