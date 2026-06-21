@@ -1,5 +1,7 @@
 """Rutas del test vocacional RIASEC por etapas."""
 
+from urllib.parse import quote
+
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -11,7 +13,7 @@ from app.services.participant_service import (
     validate_participant_data,
 )
 from app.services.result_builder_service import build_result_from_session_data
-from app.services.settings_service import get_donation_url
+from app.services.settings_service import get_donation_url, get_public_app_url
 from app.services.scoring_service import DIMENSION_LABELS
 from app.services.test_steps import (
     STEP_DIMENSIONS,
@@ -25,6 +27,19 @@ router = APIRouter(prefix="/test", tags=["test"])
 
 SESSION_ANSWERS_KEY = "answers"
 SESSION_PARTICIPANT_KEY = "participant"
+
+
+def _build_share_test_url(request: Request) -> str:
+    """Arma el enlace de WhatsApp para compartir el test vocacional."""
+    public_app_url = get_public_app_url()
+    test_url = f"{public_app_url}/test" if public_app_url else str(request.url_for("test_start"))
+    share_text = (
+        "Hice un test vocacional gratuito y me dio un perfil con carreras recomendadas "
+        f"según mis intereses. Podés probarlo acá: {test_url}"
+    )
+    return f"https://wa.me/?text={quote(share_text)}"
+
+
 LIKERT_OPTIONS = [
     (1, "No me interesa nada"),
     (2, "Me interesa poco"),
@@ -52,6 +67,7 @@ def _render_result(request: Request, answers: dict[str, str]) -> HTMLResponse:
             "participant": result_data["participant"],
             "display_name": result_data["display_name"],
             "donation_url": get_donation_url(),
+            "whatsapp_share_url": _build_share_test_url(request),
         },
     )
 
