@@ -94,6 +94,7 @@ h2 { margin-top: 2rem; }
 .wizard-summary-item span { align-items: center; background: #eef2ff; border-radius: 999px; color: var(--primary); display: inline-flex; font-weight: 900; height: 2rem; justify-content: center; width: 2rem; }
 .wizard-summary-item strong { color: var(--text); }
 .wizard-summary-item small { color: var(--muted); font-weight: 800; letter-spacing: .08em; }
+.recent-test-warning { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 16px; color: #9a3412; font-weight: 700; margin: 1.25rem 0; padding: 1rem; }
 .test-note { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 16px; color: #166534 !important; font-weight: 700; margin: 1.25rem 0; padding: 1rem; }
 .step-header { align-items: flex-start; display: flex; gap: 1rem; justify-content: space-between; }
 .step-header .dimension-code { flex: 0 0 auto; height: 4rem; width: 4rem; }
@@ -116,6 +117,8 @@ h2 { margin-top: 2rem; }
   .likert-options { grid-template-columns: 1fr; }
   .test-actions { align-items: stretch; flex-direction: column; }
   .test-actions .button { text-align: center; width: 100%; }
+  .save-share-actions { align-items: stretch; flex-direction: column; }
+  .save-share-actions .button { text-align: center; width: 100%; }
 }
 
 .result-page { display: grid; gap: 1.5rem; }
@@ -139,6 +142,9 @@ h2 { margin-top: 2rem; }
 .donation-section p { max-width: 760px; }
 .important-note { background: #fffbeb; border-color: #fde68a; }
 .important-note p { color: #92400e; margin-bottom: 0; }
+.save-share-section { background: linear-gradient(135deg, #eef2ff, #ffffff); border-color: #c7d2fe; }
+.save-share-section p { max-width: 760px; }
+.save-share-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
 
 @media (max-width: 700px) {
   .result-section { padding: 1rem; }

@@ -57,6 +57,8 @@ Si `DATABASE_URL` no está definida, la app usa SQLite local en `vocacional_dev.
 
 También se puede configurar `DONATION_URL` con un link externo de aporte voluntario (por ejemplo, un link de Mercado Pago). Cuando esta variable existe, la app muestra un botón de colaboración en el resultado y un enlace discreto en el footer. El aporte es completamente opcional: el test y el resultado siguen siendo gratuitos y no se bloquea ninguna funcionalidad si la variable no está configurada.
 
+También se puede configurar `PUBLIC_APP_URL` con la URL pública de la aplicación (por ejemplo, la URL de Render). Si existe, se usa para armar el enlace compartido por WhatsApp; si se omite, la app usa la URL del request actual para apuntar a `/test`.
+
 4. Ejecutar la aplicación:
 
 ```bash
@@ -83,7 +85,11 @@ Las recomendaciones del resultado comparan el perfil RIASEC porcentual del usuar
 
 La pantalla final también incluye un resumen interpretativo del perfil, fortalezas principales, ambientes recomendados donde el estudiante podría rendir mejor y próximos pasos accionables para investigar carreras, comparar planes de estudio y conversar con referentes. Estos textos son orientativos, no clínicos, y acompañan la recomendación de carreras por compatibilidad RIASEC sin reemplazar una evaluación profesional.
 
-Desde la pantalla final, el usuario puede descargar un informe PDF del resultado con el código vocacional, resumen, scoring RIASEC, dimensiones principales, fortalezas, ambientes recomendados, hasta 6 carreras sugeridas y próximos pasos. El PDF se genera en memoria desde los datos del resultado guardados en la sesión actual (`request.session["last_result"]`) y se entrega desde `/resultado/pdf` como archivo descargable; no se guarda en disco.
+Al final de la pantalla de resultado, la sección **Guardar y compartir** permite descargar un informe PDF del resultado con el código vocacional, resumen, scoring RIASEC, dimensiones principales, fortalezas, ambientes recomendados, hasta 6 carreras sugeridas y próximos pasos. El PDF se genera en memoria desde los datos del resultado guardados en la sesión actual y se entrega desde `/resultado/pdf` como archivo descargable; no se guarda en disco.
+
+Esa misma sección final permite compartir el test por WhatsApp con un enlace hacia `/test`. El enlace usa `PUBLIC_APP_URL` cuando está configurada; si no, se arma desde la URL del request actual. Por ahora no se crea una URL pública única por resultado: se comparte el acceso al test para que otra persona pueda completarlo.
+
+Cuando una persona llega a un resultado real, el navegador guarda en `localStorage` la fecha y hora de finalización (`vocational_test_completed_at`). Si vuelve a entrar a `/test` durante las siguientes 24 horas, se muestra un aviso suave recomendando no repetir el test muchas veces en poco tiempo para mantener la utilidad del resultado. Este aviso no bloquea el acceso, no impide repetir el test y no agrega persistencia en base de datos.
 
 Durante el wizard, las respuestas acumuladas y los datos iniciales opcionales del participante se guardan temporalmente en la sesión HTTP mediante `SessionMiddleware`; `SESSION_SECRET` puede configurarse por variable de entorno y, si no existe, se usa un valor local de desarrollo. La navegación pública muestra solo el acceso al test y oculta accesos internos o demo como `/resultado/demo` y `/admin`, aunque esas rutas siguen disponibles si se accede directamente.
 

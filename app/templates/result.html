@@ -6,10 +6,6 @@
   <h1>{% if display_name == "Tu" %}Tu{% else %}{{ display_name }}, tu{% endif %} perfil combina {{ top_dimensions[0].name }}, {{ top_dimensions[1].name }} y {{ top_dimensions[2].name }}</h1>
   <p class="lead">Tu código vocacional: <strong>{{ profile_code }}</strong></p>
 
-  {% if not is_demo %}
-    <p><a class="button" href="/resultado/pdf">Descargar informe PDF</a></p>
-  {% endif %}
-
   {% if participant and (participant.get('current_status') or participant.get('age') or participant.get('location')) %}
     <div class="result-section participant-card">
       <h2>Datos iniciales</h2>
@@ -110,5 +106,21 @@
     <h2>Importante</h2>
     <p>Este resultado es una orientación inicial basada en tus respuestas. No reemplaza una evaluación profesional ni define una única carrera posible. Usalo como punto de partida para explorar opciones, conversar con orientadores y comparar alternativas.</p>
   </div>
+
+  {% if not is_demo %}
+    <div class="result-section save-share-section">
+      <h2>Guardar y compartir</h2>
+      <p>Podés guardar tu informe completo en PDF o compartir el test para que otra persona lo pruebe.</p>
+      <div class="save-share-actions">
+        <a class="button" href="/resultado/pdf">Descargar informe PDF</a>
+        <a class="button secondary" href="{{ whatsapp_share_url }}" target="_blank" rel="noopener noreferrer">Compartir test por WhatsApp</a>
+      </div>
+    </div>
+  {% endif %}
 </section>
+{% if not is_demo %}
+  <script>
+    window.vocacionalResultCompleted = true;
+  </script>
+{% endif %}
 {% endblock %}

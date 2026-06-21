@@ -1,5 +1,7 @@
 """Rutas de resultados vocacionales."""
 
+from urllib.parse import quote
+
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
@@ -9,7 +11,7 @@ from app.services.pdf_report_service import generate_result_pdf
 from app.services.profile_summary_service import build_result_insights
 from app.services.recommendation_service import get_demo_recommendations
 from app.services.result_builder_service import build_result_from_session_data
-from app.services.settings_service import get_donation_url
+from app.services.settings_service import get_donation_url, get_public_app_url
 from app.services.scoring_service import (
     build_profile_code,
     get_demo_riasec_scores,
@@ -18,6 +20,17 @@ from app.services.scoring_service import (
 
 templates = Jinja2Templates(directory="app/templates")
 router = APIRouter(prefix="/resultado", tags=["results"])
+
+
+def _build_share_test_url(request: Request) -> str:
+    """Arma el enlace de WhatsApp para compartir el test vocacional."""
+    public_app_url = get_public_app_url()
+    test_url = f"{public_app_url}/test" if public_app_url else str(request.url_for("test_start"))
+    share_text = (
+        "Hice un test vocacional gratuito y me dio un perfil con carreras recomendadas "
+        f"según mis intereses. Podés probarlo acá: {test_url}"
+    )
+    return f"https://wa.me/?text={quote(share_text)}"
 
 
 @router.get("/pdf")
@@ -61,5 +74,6 @@ async def demo_result(request: Request):
             "participant": participant,
             "display_name": get_display_name(participant),
             "donation_url": get_donation_url(),
+            "whatsapp_share_url": _build_share_test_url(request),
         },
     )
