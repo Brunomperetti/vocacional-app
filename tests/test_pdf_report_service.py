@@ -50,7 +50,7 @@ def test_generate_result_pdf_starts_with_valid_pdf_header():
     assert pdf_bytes.startswith(b"%PDF")
 
 
-def test_download_result_pdf_without_last_result_redirects_to_test():
+def test_download_result_pdf_without_answers_redirects_to_test():
     pytest.importorskip("fastapi")
     from fastapi.testclient import TestClient
 
@@ -62,3 +62,28 @@ def test_download_result_pdf_without_last_result_redirects_to_test():
 
     assert response.status_code == 303
     assert response.headers["location"] == "/test"
+
+
+def test_download_result_pdf_with_complete_answers_returns_pdf():
+    pytest.importorskip("fastapi")
+    pytest.importorskip("reportlab")
+    from fastapi.testclient import TestClient
+
+    from app.data.questions import TEST_QUESTIONS
+    from app.main import app
+    from app.services.test_steps import TOTAL_STEPS, get_step_questions
+
+    client = TestClient(app)
+    client.post("/test/iniciar", data={"name": "Ana"}, follow_redirects=False)
+
+    for step in range(1, TOTAL_STEPS + 1):
+        step_data = {question["id"]: "4" for question in get_step_questions(step)}
+        client.post(f"/test/paso/{step}", data=step_data, follow_redirects=False)
+
+    response = client.get("/resultado/pdf", follow_redirects=False)
+
+    assert len(TEST_QUESTIONS) == 36
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/pdf"
+    assert response.headers["content-disposition"] == 'attachment; filename="informe-vocacional.pdf"'
+    assert response.content.startswith(b"%PDF")
