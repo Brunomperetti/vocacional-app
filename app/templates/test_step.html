@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Paso {{ step }} de {{ total_steps }} - {{ dimension_name }} | {{ get_app_name() }}{% endblock %}
 {% block content %}
-<section class="panel test-panel">
+<section class="panel test-panel" data-step-number="{{ step }}" data-step-dimension="{{ dimension_code }}">
   <p class="eyebrow">Test vocacional RIASEC</p>
   <div class="step-header">
     <div>

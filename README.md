@@ -79,6 +79,23 @@ uvicorn app.main:app --reload
 - Admin con login: <http://127.0.0.1:8000/admin>
 - Health check: <http://127.0.0.1:8000/health>
 
+## Medición opcional de marketing
+
+La app puede activar medición básica de lanzamiento sin cambiar el flujo del test ni guardar eventos en la base de datos. Las variables son opcionales y, si se omiten o quedan vacías, la aplicación funciona igual y no renderiza scripts de terceros.
+
+- `GA_MEASUREMENT_ID` activa Google Analytics 4 mediante el tag básico de `gtag.js`.
+- `META_PIXEL_ID` activa Meta Pixel con `PageView` y eventos personalizados front-end.
+
+Eventos disponibles desde el front-end:
+
+- `view_landing`: carga de la landing pública.
+- `start_test`: click o envío para comenzar el test.
+- `test_step_view`: carga de cada paso del wizard, con número de paso y dimensión RIASEC.
+- `complete_test`: carga de un resultado real; no se dispara en `/resultado/demo`.
+- `download_pdf`: click en descarga del informe PDF.
+- `share_whatsapp`: click en compartir el test por WhatsApp.
+- `donation_click`: click en el aporte voluntario.
+
 ## Banco inicial de preguntas RIASEC
 
 La app ya incluye un banco inicial de 36 preguntas RIASEC en `app/data/questions.py`, distribuido en 6 preguntas por dimensión: Realista, Investigativo, Artístico, Social, Emprendedor y Convencional.
