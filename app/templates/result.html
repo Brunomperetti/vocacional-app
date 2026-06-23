@@ -98,7 +98,7 @@
     <div class="result-section donation-section">
       <h2>¿Te sirvió el test?</h2>
       <p>Este test es gratuito y busca ayudar a estudiantes y personas que están decidiendo qué estudiar. Si te resultó útil y querés colaborar con el mantenimiento de la app, el dominio, el hosting y futuras mejoras, podés hacer un aporte voluntario. No es obligatorio.</p>
-      <a class="button" href="{{ donation_url }}" target="_blank" rel="noopener noreferrer">Aportar voluntariamente</a>
+      <a class="button" href="{{ donation_url }}" target="_blank" rel="noopener noreferrer" data-track="donation_click">Aportar voluntariamente</a>
     </div>
   {% endif %}
 
@@ -112,8 +112,8 @@
       <h2>Guardar y compartir</h2>
       <p>Podés guardar tu informe completo en PDF o compartir el test para que otra persona lo pruebe.</p>
       <div class="save-share-actions">
-        <a class="button" href="/resultado/pdf">Descargar informe PDF</a>
-        <a class="button secondary" href="{{ whatsapp_share_url }}" target="_blank" rel="noopener noreferrer">Compartir test por WhatsApp</a>
+        <a class="button" href="/resultado/pdf" data-track="download_pdf">Descargar informe PDF</a>
+        <a class="button secondary" href="{{ whatsapp_share_url }}" target="_blank" rel="noopener noreferrer" data-track="share_whatsapp">Compartir test por WhatsApp</a>
       </div>
     </div>
   {% endif %}

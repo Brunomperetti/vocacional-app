@@ -18,7 +18,7 @@ from app.services.participant_service import (
 )
 from app.services.result_builder_service import build_result_from_session_data
 from app.services.result_persistence_service import save_test_result
-from app.services.settings_service import get_app_name, get_donation_url, get_public_app_url
+from app.services.settings_service import get_app_name, get_public_app_url, get_public_template_context
 from app.services.scoring_service import DIMENSION_LABELS
 from app.services.test_steps import (
     STEP_DIMENSIONS,
@@ -71,19 +71,19 @@ def _render_result(request: Request, answers: dict[str, str], db: Session | None
 
     return templates.TemplateResponse(
         "result.html",
-        {
-            "request": request,
-            "scores": result_data["percentages"],
-            "top_dimensions": result_data["top_dimensions"],
-            "profile_code": result_data["profile_code"],
-            "recommendations": result_data["recommended_careers"],
-            "insights": result_data["insights"],
-            "is_demo": False,
-            "participant": result_data["participant"],
-            "display_name": result_data["display_name"],
-            "donation_url": get_donation_url(),
-            "whatsapp_share_url": _build_share_test_url(request),
-        },
+        get_public_template_context(
+            request=request,
+            page="result",
+            scores=result_data["percentages"],
+            top_dimensions=result_data["top_dimensions"],
+            profile_code=result_data["profile_code"],
+            recommendations=result_data["recommended_careers"],
+            insights=result_data["insights"],
+            is_demo=False,
+            participant=result_data["participant"],
+            display_name=result_data["display_name"],
+            whatsapp_share_url=_build_share_test_url(request),
+        ),
     )
 
 
@@ -99,22 +99,22 @@ def _build_step_context(
     session_answers = request.session.get(SESSION_ANSWERS_KEY, {})
     answers = {**session_answers, **(submitted_answers or {})}
 
-    return {
-        "request": request,
-        "step": step,
-        "total_steps": TOTAL_STEPS,
-        "progress_percentage": progress_percentage,
-        "dimension_code": dimension,
-        "dimension_name": DIMENSION_LABELS[dimension],
-        "dimension_description": get_step_dimension_description(step),
-        "questions": get_step_questions(step),
-        "likert_options": LIKERT_OPTIONS,
-        "error": error,
-        "answers": answers,
-        "previous_step": step - 1 if step > 1 else None,
-        "next_label": "Ver mi resultado" if step == TOTAL_STEPS else "Siguiente",
-        "donation_url": get_donation_url(),
-    }
+    return get_public_template_context(
+        request=request,
+        page="test_step",
+        step=step,
+        total_steps=TOTAL_STEPS,
+        progress_percentage=progress_percentage,
+        dimension_code=dimension,
+        dimension_name=DIMENSION_LABELS[dimension],
+        dimension_description=get_step_dimension_description(step),
+        questions=get_step_questions(step),
+        likert_options=LIKERT_OPTIONS,
+        error=error,
+        answers=answers,
+        previous_step=step - 1 if step > 1 else None,
+        next_label="Ver mi resultado" if step == TOTAL_STEPS else "Siguiente",
+    )
 
 
 @router.get("", response_class=HTMLResponse)
@@ -123,16 +123,16 @@ async def test_start(request: Request):
     request.session.pop(SESSION_ANSWERS_KEY, None)
     return templates.TemplateResponse(
         "test_start.html",
-        {
-            "request": request,
-            "total_steps": TOTAL_STEPS,
-            "dimension_labels": DIMENSION_LABELS,
-            "step_dimensions": STEP_DIMENSIONS,
-            "current_status_options": CURRENT_STATUS_OPTIONS,
-            "participant": request.session.get(SESSION_PARTICIPANT_KEY, {}),
-            "errors": [],
-            "donation_url": get_donation_url(),
-        },
+        get_public_template_context(
+            request=request,
+            page="test_start",
+            total_steps=TOTAL_STEPS,
+            dimension_labels=DIMENSION_LABELS,
+            step_dimensions=STEP_DIMENSIONS,
+            current_status_options=CURRENT_STATUS_OPTIONS,
+            participant=request.session.get(SESSION_PARTICIPANT_KEY, {}),
+            errors=[],
+        ),
     )
 
 
@@ -146,16 +146,16 @@ async def start_test(request: Request):
     if errors:
         return templates.TemplateResponse(
             "test_start.html",
-            {
-                "request": request,
-                "total_steps": TOTAL_STEPS,
-                "dimension_labels": DIMENSION_LABELS,
-                "step_dimensions": STEP_DIMENSIONS,
-                "current_status_options": CURRENT_STATUS_OPTIONS,
-                "participant": participant,
-                "errors": errors,
-                "donation_url": get_donation_url(),
-            },
+            get_public_template_context(
+                request=request,
+                page="test_start",
+                total_steps=TOTAL_STEPS,
+                dimension_labels=DIMENSION_LABELS,
+                step_dimensions=STEP_DIMENSIONS,
+                current_status_options=CURRENT_STATUS_OPTIONS,
+                participant=participant,
+                errors=errors,
+            ),
             status_code=400,
         )
 

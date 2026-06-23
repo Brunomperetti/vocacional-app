@@ -4,7 +4,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from app.services.settings_service import get_app_name, get_donation_url
+from app.services.settings_service import get_app_name, get_public_template_context
 
 templates = Jinja2Templates(directory="app/templates")
 templates.env.globals["get_app_name"] = get_app_name
@@ -15,7 +15,7 @@ router = APIRouter()
 async def index(request: Request):
     """Landing principal de Vocación360."""
     return templates.TemplateResponse(
-        "index.html", {"request": request, "donation_url": get_donation_url()}
+        "index.html", get_public_template_context(request=request, page="landing")
     )
 
 
@@ -23,7 +23,7 @@ async def index(request: Request):
 async def privacy(request: Request):
     """Página pública de privacidad y uso de datos."""
     return templates.TemplateResponse(
-        "privacy.html", {"request": request, "donation_url": get_donation_url()}
+        "privacy.html", get_public_template_context(request=request, page="legal")
     )
 
 
@@ -31,5 +31,5 @@ async def privacy(request: Request):
 async def legal_notice(request: Request):
     """Página pública de aviso legal."""
     return templates.TemplateResponse(
-        "legal.html", {"request": request, "donation_url": get_donation_url()}
+        "legal.html", get_public_template_context(request=request, page="legal")
     )
