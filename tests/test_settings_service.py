@@ -150,23 +150,29 @@ def test_index_template_contains_creator_section_with_conditional_linkedin_url()
 
     assert "CREADOR DEL PROYECTO" in html
     assert "Proyecto creado por Bruno Peretti" in html
+    assert "Vocación360 fue creado como una herramienta gratuita" in html
     assert "{% if creator_linkedin_url %}" in html
     assert 'href="{{ creator_linkedin_url }}"' in html
 
 
 def test_index_template_contains_creator_section_outside_linkedin_condition():
     html = Path("app/templates/index.html").read_text()
-    section_start = html.index('<section class="creator-section">')
+    section_start = html.index('<section id="creador" class="creator-section">')
     section_end = html.index('</section>', section_start)
     section = html[section_start:section_end]
+    before_section = html[:section_start]
 
+    assert "<!-- Creator section -->" in html
     assert "Proyecto creado por Bruno Peretti" in section
+    assert "CREADOR DEL PROYECTO" in section
+    assert "Vocación360 fue creado como una herramienta gratuita" in section
+    assert "{% if creator_linkedin_url %}" not in before_section
     assert section.index("Proyecto creado por Bruno Peretti") < section.index("{% if creator_linkedin_url %}")
 
 
 def test_index_template_shows_only_linkedin_button_conditionally():
     html = Path("app/templates/index.html").read_text()
-    section_start = html.index('<section class="creator-section">')
+    section_start = html.index('<section id="creador" class="creator-section">')
     section_end = html.index('</section>', section_start)
     section = html[section_start:section_end]
 
@@ -174,6 +180,32 @@ def test_index_template_shows_only_linkedin_button_conditionally():
     assert "{% if creator_linkedin_url %}" in section
     assert 'href="{{ creator_linkedin_url }}"' in section
     assert section.count("{% if creator_linkedin_url %}") == 1
+
+
+def test_public_index_route_renders_index_with_public_context():
+    source = Path("app/routes/public.py").read_text()
+
+    assert '@router.get("/", response_class=HTMLResponse)' in source
+    assert '"index.html"' in source
+    assert "get_public_template_context" in source
+    assert 'page="landing"' in source
+    assert "testimonials=testimonials" in source
+
+
+def test_creator_section_css_is_visible():
+    css = Path("app/static/css/styles.css").read_text()
+    section_rule_start = css.index(".creator-section")
+    section_rule_end = css.index("}", section_rule_start)
+    card_rule_start = css.index(".creator-card")
+    card_rule_end = css.index("}", card_rule_start)
+    creator_css = css[section_rule_start:section_rule_end] + css[card_rule_start:card_rule_end]
+
+    assert "margin-top: 3rem" in creator_css
+    assert "display: none" not in creator_css
+    assert "visibility: hidden" not in creator_css
+    assert "height: 0" not in creator_css
+    assert "background: var(--card)" in creator_css
+    assert "border: 1px solid var(--border)" in creator_css
 
 
 def test_result_template_contains_structured_career_card_header():
