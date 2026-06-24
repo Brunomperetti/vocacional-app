@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Comentarios | {{ get_app_name() }}{% endblock %}
+{% block content %}
+<section class="panel admin-detail-panel">
+  <div class="admin-session-bar">
+    <span>Sesión administrador</span>
+    <a href="/admin/logout">Cerrar sesión</a>
+  </div>
+  <div class="detail-header">
+    <div>
+      <p class="eyebrow">Comentarios</p>
+      <h1>Comentarios pendientes</h1>
+    </div>
+    <a class="button secondary" href="/admin">Volver al dashboard</a>
+  </div>
+
+  <h2>Pendientes</h2>
+  {% if pending_testimonials %}
+    <div class="table-wrapper">
+      <table class="admin-results-table">
+        <thead><tr><th>Fecha</th><th>Nombre</th><th>Comentario</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody>
+          {% for item in pending_testimonials %}
+            <tr>
+              <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+              <td>{{ item.name or 'Sin nombre' }}</td>
+              <td>{{ item.comment }}</td>
+              <td>Pendiente</td>
+              <td class="admin-actions">
+                <form method="post" action="/admin/testimonios/{{ item.id }}/aprobar"><button class="table-action button-link" type="submit">Aprobar</button></form>
+                <form method="post" action="/admin/testimonios/{{ item.id }}/eliminar"><button class="table-action button-link danger" type="submit">Eliminar</button></form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>No hay comentarios pendientes.</p>
+  {% endif %}
+
+  <h2>Aprobados recientes</h2>
+  {% if approved_testimonials %}
+    <div class="table-wrapper">
+      <table class="admin-results-table">
+        <thead><tr><th>Fecha</th><th>Nombre</th><th>Comentario</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody>
+          {% for item in approved_testimonials %}
+            <tr>
+              <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+              <td>{{ item.name or 'Sin nombre' }}</td>
+              <td>{{ item.comment }}</td>
+              <td>Aprobado</td>
+              <td><form method="post" action="/admin/testimonios/{{ item.id }}/eliminar"><button class="table-action button-link danger" type="submit">Eliminar</button></form></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>No hay comentarios aprobados todavía.</p>
+  {% endif %}
+</section>
+{% endblock %}

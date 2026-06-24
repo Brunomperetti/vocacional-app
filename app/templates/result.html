@@ -116,6 +116,25 @@
         <a class="button secondary" href="{{ whatsapp_share_url }}" target="_blank" rel="noopener noreferrer" data-track="share_whatsapp">Compartir test por WhatsApp</a>
       </div>
     </div>
+    <div class="result-section testimonial-form-section">
+      <h2>¿Querés dejar tu opinión?</h2>
+      <p>Tu comentario nos ayuda a mejorar y también puede orientar a otras personas. Se publicará solo si es aprobado.</p>
+      <form class="participant-form" method="post" action="/testimonios">
+        <div class="form-grid">
+          <label>Nombre (opcional)
+            <input type="text" name="name" maxlength="80" autocomplete="name">
+          </label>
+          <label class="form-grid-wide">Comentario
+            <textarea name="comment" maxlength="500" minlength="10" required rows="5"></textarea>
+          </label>
+        </div>
+        <label class="consent-line">
+          <input type="checkbox" name="public_consent" required>
+          <span>Acepto que mi comentario pueda mostrarse públicamente en Vocación360.</span>
+        </label>
+        <button class="button" type="submit">Enviar comentario</button>
+      </form>
+    </div>
   {% endif %}
 </section>
 {% if not is_demo %}

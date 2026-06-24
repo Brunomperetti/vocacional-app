@@ -9,7 +9,7 @@
   <p class="eyebrow">Administración</p>
   <h1>Dashboard básico</h1>
   <p>Panel con métricas mínimas de tests completados.</p>
-  <p><a class="button" href="/admin/export.csv">Exportar CSV</a></p>
+  <p><a class="button" href="/admin/export.csv">Exportar CSV</a> <a class="button secondary" href="/admin/testimonios">Comentarios pendientes</a></p>
 
   {% if db_error %}
     <div class="error-message" role="alert"><p>{{ db_error }}</p></div>
@@ -17,7 +17,7 @@
 
   <div class="cards">
     <article class="card"><h2>{{ total_results }}</h2><p>Tests completados guardados en base de datos.</p></article>
-    <article class="card"><h2>Carreras</h2><p>Próximamente: catálogo de carreras recomendables.</p></article>
+    <article class="card"><h2>{{ pending_testimonials_count }}</h2><p>Comentarios pendientes de aprobación.</p><a class="table-action" href="/admin/testimonios">Revisar comentarios pendientes</a></article>
     <article class="card"><h2>Reportes</h2><p>Exportá resultados completos para análisis externo.</p></article>
   </div>
 
