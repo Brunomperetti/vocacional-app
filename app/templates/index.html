@@ -29,6 +29,17 @@
   </article>
 </section>
 
+<section class="creator-section">
+  <article class="creator-card">
+    <p class="eyebrow">CREADOR DEL PROYECTO</p>
+    <h2>Proyecto creado por Bruno Peretti</h2>
+    <p>Vocación360 fue creado como una herramienta gratuita para ayudar a personas que están definiendo qué estudiar, combinando orientación vocacional basada en RIASEC, tecnología y una experiencia simple de usar.</p>
+    {% if creator_linkedin_url %}
+      <a class="button secondary" href="{{ creator_linkedin_url }}" target="_blank" rel="noopener noreferrer">Ver perfil de LinkedIn</a>
+    {% endif %}
+  </article>
+</section>
+
 {% if testimonials %}
 <section class="testimonials-section">
   <p class="eyebrow">Opiniones</p>

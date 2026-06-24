@@ -111,3 +111,44 @@ def test_test_step_template_contains_step_tracking_data_attributes():
 
     assert 'data-step-number="{{ step }}"' in html
     assert 'data-step-dimension="{{ dimension_code }}"' in html
+
+
+def test_get_creator_linkedin_url_returns_none_when_missing(monkeypatch):
+    from app.services.settings_service import get_creator_linkedin_url
+
+    monkeypatch.delenv("CREATOR_LINKEDIN_URL", raising=False)
+
+    assert get_creator_linkedin_url() is None
+
+
+def test_get_creator_linkedin_url_returns_none_when_not_https(monkeypatch):
+    from app.services.settings_service import get_creator_linkedin_url
+
+    monkeypatch.setenv("CREATOR_LINKEDIN_URL", "http://linkedin.com/in/bruno")
+
+    assert get_creator_linkedin_url() is None
+
+
+def test_get_creator_linkedin_url_returns_trimmed_https_url(monkeypatch):
+    from app.services.settings_service import get_creator_linkedin_url
+
+    monkeypatch.setenv("CREATOR_LINKEDIN_URL", " https://www.linkedin.com/in/bruno-peretti ")
+
+    assert get_creator_linkedin_url() == "https://www.linkedin.com/in/bruno-peretti"
+
+
+def test_result_template_supports_testimonial_success_message():
+    html = Path("app/templates/result.html").read_text()
+
+    assert "comentario') == 'enviado'" in html
+    assert "Gracias por dejar tu opinión" in html
+    assert 'name="return_to"' in html
+
+
+def test_index_template_contains_creator_section_with_conditional_linkedin_url():
+    html = Path("app/templates/index.html").read_text()
+
+    assert "CREADOR DEL PROYECTO" in html
+    assert "Proyecto creado por Bruno Peretti" in html
+    assert "{% if creator_linkedin_url %}" in html
+    assert 'href="{{ creator_linkedin_url }}"' in html
