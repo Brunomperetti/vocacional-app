@@ -44,14 +44,14 @@
 
 {% if testimonials %}
 <section class="testimonials-section">
-  <p class="eyebrow">Opiniones</p>
+  <p class="eyebrow">OPINIONES</p>
   <h2>Opiniones de personas que hicieron el test</h2>
-  <div class="cards testimonial-cards">
+  <div class="testimonials-grid">
     {% for testimonial in testimonials %}
-      <article class="card testimonial-card">
-        <p>“{{ testimonial.comment }}”</p>
-        <strong>{{ testimonial.name or 'Usuario/a de Vocación360' }}</strong>
-        {% if testimonial.created_at %}<small>{{ testimonial.created_at.strftime('%d/%m/%Y') }}</small>{% endif %}
+      <article class="testimonial-card">
+        <p class="testimonial-comment">“{{ testimonial.comment }}”</p>
+        <strong class="testimonial-name">{{ testimonial.name or 'Usuario/a de Vocación360' }}</strong>
+        {% if testimonial.created_at %}<small class="testimonial-date">{{ testimonial.created_at.strftime('%d/%m/%Y') }}</small>{% endif %}
       </article>
     {% endfor %}
   </div>
