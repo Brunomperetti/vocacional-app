@@ -72,14 +72,19 @@
       {% for item in recommendations %}
         <article class="card career-card">
           <div class="career-card-header">
-            <h3>{{ item.name }}</h3>
-            <span>{{ item.match_percentage }}% de compatibilidad</span>
+            <h3 class="career-card-title">{{ item.name }}</h3>
+            <span class="compatibility-badge">{{ item.match_percentage }}% de compatibilidad</span>
           </div>
-          <p><strong>Área:</strong> {{ item.area }}</p>
-          <p><strong>Duración:</strong> {{ item.duration }}</p>
-          <p><strong>Tipo de formación:</strong> {{ item.study_type }}</p>
-          <p>{{ item.description }}</p>
-          <p><strong>Skills principales:</strong> {{ item.skills | join(", ") }}</p>
+
+          <div class="career-card-meta">
+            <p><strong>Área:</strong> {{ item.area }}</p>
+            <p><strong>Duración:</strong> {{ item.duration }}</p>
+            <p><strong>Tipo de formación:</strong> {{ item.study_type }}</p>
+          </div>
+
+          <p class="career-card-description">{{ item.description }}</p>
+
+          <p class="career-card-skills"><strong>Skills principales:</strong> {{ item.skills | join(", ") }}</p>
         </article>
       {% endfor %}
     </div>

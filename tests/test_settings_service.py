@@ -152,3 +152,65 @@ def test_index_template_contains_creator_section_with_conditional_linkedin_url()
     assert "Proyecto creado por Bruno Peretti" in html
     assert "{% if creator_linkedin_url %}" in html
     assert 'href="{{ creator_linkedin_url }}"' in html
+
+
+def test_index_template_contains_creator_section_outside_linkedin_condition():
+    html = Path("app/templates/index.html").read_text()
+    section_start = html.index('<section class="creator-section">')
+    section_end = html.index('</section>', section_start)
+    section = html[section_start:section_end]
+
+    assert "Proyecto creado por Bruno Peretti" in section
+    assert section.index("Proyecto creado por Bruno Peretti") < section.index("{% if creator_linkedin_url %}")
+
+
+def test_index_template_shows_only_linkedin_button_conditionally():
+    html = Path("app/templates/index.html").read_text()
+    section_start = html.index('<section class="creator-section">')
+    section_end = html.index('</section>', section_start)
+    section = html[section_start:section_end]
+
+    assert "Ver perfil de LinkedIn" in section
+    assert "{% if creator_linkedin_url %}" in section
+    assert 'href="{{ creator_linkedin_url }}"' in section
+    assert section.count("{% if creator_linkedin_url %}") == 1
+
+
+def test_result_template_contains_structured_career_card_header():
+    html = Path("app/templates/result.html").read_text()
+
+    assert 'class="career-card-header"' in html
+    assert 'class="career-card-title"' in html
+    assert 'class="compatibility-badge"' in html
+    assert html.index('class="career-card-header"') < html.index('class="compatibility-badge"') < html.index('class="career-card-meta"')
+
+
+def test_result_template_contains_career_card_hierarchy_classes():
+    html = Path("app/templates/result.html").read_text()
+
+    assert 'class="career-card-meta"' in html
+    assert 'class="career-card-description"' in html
+    assert 'class="career-card-skills"' in html
+
+
+def test_stylesheet_contains_responsive_career_grid_and_header_rules():
+    css = Path("app/static/css/styles.css").read_text()
+
+    assert ".career-cards" in css
+    assert "repeat(auto-fit, minmax(280px, 1fr))" in css
+    assert ".career-card-header" in css
+    assert "flex-wrap: wrap" in css
+    assert "@media (max-width: 700px)" in css
+    assert ".career-card-header { align-items: flex-start; flex-direction: column; }" in css
+
+
+def test_stylesheet_keeps_compatibility_badge_non_absolute():
+    css = Path("app/static/css/styles.css").read_text()
+    badge_rule_start = css.index(".compatibility-badge")
+    badge_rule_end = css.index("}", badge_rule_start)
+    badge_rule = css[badge_rule_start:badge_rule_end]
+
+    assert "position: static" in badge_rule
+    assert "display: inline-flex" in badge_rule
+    assert "white-space: nowrap" in badge_rule
+    assert "position: absolute" not in badge_rule

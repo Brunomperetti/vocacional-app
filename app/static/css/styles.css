@@ -56,6 +56,7 @@ h2 { margin-top: 2rem; }
 .button:hover { background: var(--primary-dark); }
 .button.secondary { background: #111827; }
 .cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 1.5rem; }
+.cards > .card { min-width: 0; }
 .card, .score-item { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 1.25rem; }
 .card p, .panel p, .checklist { color: var(--muted); }
 .score-grid { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
@@ -130,12 +131,16 @@ h2 { margin-top: 2rem; }
 .insight-grid { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 .insight-grid-wide { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .insight-card { background: #f9fafb; border: 1px solid var(--border); border-radius: 16px; color: var(--text); font-weight: 700; padding: 1rem; }
-.career-cards { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-.career-card { display: grid; gap: .6rem; }
+.career-cards { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
+.career-card { display: grid; gap: .95rem; height: auto; overflow: visible; padding: 1.25rem; position: static; }
 .career-card p { margin: 0; }
-.career-card-header { align-items: flex-start; display: flex; gap: 1rem; justify-content: space-between; }
-.career-card-header h3 { margin: 0; }
-.career-card-header span { background: #eef2ff; border-radius: 999px; color: var(--primary); flex: 0 0 auto; font-size: .85rem; font-weight: 900; padding: .4rem .7rem; }
+.career-card-header { align-items: flex-start; display: flex; flex-wrap: wrap; gap: .75rem; justify-content: space-between; margin-bottom: .15rem; }
+.career-card-title { flex: 1 1 220px; line-height: 1.25; margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.compatibility-badge { align-items: center; background: #eef2ff; border-radius: 999px; color: var(--primary); display: inline-flex; flex: 0 0 auto; font-size: .85rem; font-weight: 900; max-width: 100%; padding: .4rem .7rem; position: static; white-space: nowrap; }
+.career-card-meta { background: #f9fafb; border: 1px solid var(--border); border-radius: 14px; display: grid; gap: .45rem; padding: .85rem; }
+.career-card-meta p { color: var(--muted); }
+.career-card-description { color: var(--text) !important; line-height: 1.65; }
+.career-card-skills { border-top: 1px solid var(--border); color: var(--muted); line-height: 1.55; padding-top: .85rem; }
 .next-steps { color: var(--muted); display: grid; gap: .75rem; margin: 0; padding-left: 1.25rem; }
 .next-steps li::marker { color: var(--primary); font-weight: 900; }
 .donation-section { background: linear-gradient(135deg, #f0fdf4, #ffffff); border-color: #bbf7d0; }
@@ -148,7 +153,10 @@ h2 { margin-top: 2rem; }
 
 @media (max-width: 700px) {
   .result-section { padding: 1rem; }
-  .career-card-header { flex-direction: column; }
+  .career-cards { grid-template-columns: 1fr; }
+  .career-card-header { align-items: flex-start; flex-direction: column; }
+  .career-card-title { flex-basis: auto; }
+  .compatibility-badge { white-space: normal; }
 }
 .participant-form { border-top: 1px solid var(--border); display: grid; gap: 1.25rem; margin-top: 2rem; padding-top: 1.5rem; }
 .participant-form h2 { margin: 0 0 .5rem; }
@@ -187,6 +195,7 @@ h2 { margin-top: 2rem; }
 .form-grid textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, .12); outline: none; }
 .consent-line { align-items: flex-start; color: var(--text); display: flex; font-weight: 700; gap: .65rem; }
 .testimonials-section { margin-top: 2rem; }
+.testimonial-cards { grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 360px)); justify-content: center; }
 .testimonial-card { display: grid; gap: .6rem; }
 .testimonial-card p { color: var(--text); font-size: 1.05rem; line-height: 1.6; margin: 0; }
 .testimonial-card strong { color: var(--primary); }
