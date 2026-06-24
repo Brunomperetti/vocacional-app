@@ -72,3 +72,21 @@ def test_admin_export_csv_requires_admin_session():
 
     assert response.status_code == 303
     assert response.headers["location"] == "/admin/login"
+
+
+def test_admin_testimonials_redirects_to_login_without_session():
+    client = TestClient(app)
+
+    response = client.get("/admin/testimonios", follow_redirects=False)
+
+    assert response.status_code == 303
+    assert response.headers["location"] == "/admin/login"
+
+
+def test_admin_testimonial_actions_redirect_to_login_without_session():
+    client = TestClient(app)
+
+    response = client.post("/admin/testimonios/1/aprobar", follow_redirects=False)
+
+    assert response.status_code == 303
+    assert response.headers["location"] == "/admin/login"

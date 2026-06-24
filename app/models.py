@@ -47,6 +47,7 @@ class TestResult(Base):
         back_populates="test_result",
         cascade="all, delete-orphan",
     )
+    testimonials: Mapped[list["Testimonial"]] = relationship(back_populates="source_result")
 
 
 class TestAnswer(Base):
@@ -61,3 +62,20 @@ class TestAnswer(Base):
     value: Mapped[int] = mapped_column(Integer, nullable=False)
 
     test_result: Mapped[TestResult] = relationship(back_populates="answers")
+
+
+class Testimonial(Base):
+    """Comentario de usuario pendiente o aprobado para mostrar en la landing."""
+
+    __tablename__ = "testimonials"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    name: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    comment: Mapped[str] = mapped_column(Text, nullable=False)
+    approved: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)
+    source_result_id: Mapped[int | None] = mapped_column(ForeignKey("test_results.id"), nullable=True, index=True)
+    ip_address: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    user_agent: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
+    source_result: Mapped[TestResult | None] = relationship(back_populates="testimonials")

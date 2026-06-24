@@ -17,9 +17,14 @@ from app.auth import (
     verify_admin_credentials,
 )
 from app.database import get_db
-from app.models import TestResult
+from app.models import TestResult, Testimonial
 from app.services.admin_service import safe_json_loads
 from app.services.settings_service import get_app_name
+from app.services.testimonial_service import (
+    approve_testimonial,
+    get_pending_testimonials,
+    reject_or_delete_testimonial,
+)
 
 ADMIN_CONFIG_MESSAGE = (
     "El acceso admin todavía no está configurado. Definí ADMIN_USERNAME y "
@@ -99,8 +104,10 @@ async def admin_dashboard(request: Request, db: Session = Depends(get_db)):
     total_results = 0
     latest_results = []
     db_error = None
+    pending_testimonials_count = 0
     try:
         total_results = db.query(func.count(TestResult.id)).scalar() or 0
+        pending_testimonials_count = db.query(func.count(Testimonial.id)).filter(Testimonial.approved.is_(False)).scalar() or 0
         latest_results = (
             db.query(TestResult)
             .order_by(desc(TestResult.created_at))
@@ -116,6 +123,7 @@ async def admin_dashboard(request: Request, db: Session = Depends(get_db)):
             "request": request,
             "total_results": total_results,
             "latest_results": latest_results,
+            "pending_testimonials_count": pending_testimonials_count,
             "db_error": db_error,
         },
     )
@@ -197,3 +205,49 @@ async def admin_export_csv(request: Request, db: Session = Depends(get_db)):
         media_type="text/csv",
         headers={"Content-Disposition": 'attachment; filename="resultados-vocacionales.csv"'},
     )
+
+
+@router.get("/testimonios", response_class=HTMLResponse)
+async def admin_testimonials(request: Request, db: Session = Depends(get_db)):
+    """Muestra comentarios pendientes y aprobados recientes."""
+    if not is_admin_authenticated(request):
+        return _admin_login_redirect()
+
+    pending = get_pending_testimonials(db, limit=50)
+    approved_recent = (
+        db.query(Testimonial)
+        .filter(Testimonial.approved.is_(True))
+        .order_by(desc(Testimonial.created_at))
+        .limit(20)
+        .all()
+    )
+    return templates.TemplateResponse(
+        "admin/testimonials.html",
+        {
+            "request": request,
+            "pending_testimonials": pending,
+            "approved_testimonials": approved_recent,
+        },
+    )
+
+
+@router.post("/testimonios/{testimonial_id}/aprobar")
+async def admin_approve_testimonial(
+    testimonial_id: int, request: Request, db: Session = Depends(get_db)
+):
+    """Aprueba un comentario pendiente."""
+    if not is_admin_authenticated(request):
+        return _admin_login_redirect()
+    approve_testimonial(db, testimonial_id)
+    return RedirectResponse(url="/admin/testimonios", status_code=303)
+
+
+@router.post("/testimonios/{testimonial_id}/eliminar")
+async def admin_delete_testimonial(
+    testimonial_id: int, request: Request, db: Session = Depends(get_db)
+):
+    """Elimina un comentario pendiente o aprobado."""
+    if not is_admin_authenticated(request):
+        return _admin_login_redirect()
+    reject_or_delete_testimonial(db, testimonial_id)
+    return RedirectResponse(url="/admin/testimonios", status_code=303)

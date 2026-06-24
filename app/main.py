@@ -8,7 +8,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.database import Base, engine
 from app import models  # noqa: F401 - registra modelos ORM antes de crear tablas
-from app.routes import admin, public, results, test
+from app.routes import admin, public, results, test, testimonials
 
 Base.metadata.create_all(bind=engine)
 
@@ -28,6 +28,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 app.include_router(public.router)
 app.include_router(test.router)
 app.include_router(results.router)
+app.include_router(testimonials.router)
 app.include_router(admin.router)
 
 

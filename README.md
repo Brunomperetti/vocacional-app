@@ -138,3 +138,9 @@ El archivo `render.yaml` incluye una configuración inicial para:
 ## Estado actual
 
 Incluye la base funcional inicial, el banco de 36 preguntas RIASEC, el test por etapas desde `/test`, consentimiento obligatorio, persistencia de resultados completos en base de datos, cálculo real de scoring RIASEC, insights interpretativos, recomendación inicial de carreras por compatibilidad RIASEC y login simple para `/admin` mediante variables de entorno, detalle administrativo de resultados y exportación CSV protegida. Todavía no contiene usuarios en base de datos, migraciones Alembic ni machine learning.
+
+### Comentarios y testimonios
+
+Al finalizar el resultado real, las personas pueden dejar un comentario opcional sobre su experiencia con el test. Estos comentarios se guardan en la base de datos como testimonios pendientes (`approved=False`) y no aparecen automáticamente en la landing.
+
+El panel protegido `/admin` muestra un contador de comentarios pendientes y una pantalla en `/admin/testimonios` donde el administrador puede aprobarlos o eliminarlos. Solo los comentarios aprobados por el admin se muestran públicamente en la landing, hasta un máximo de 6 recientes. No se publica el WhatsApp ni datos del test junto con los comentarios.
