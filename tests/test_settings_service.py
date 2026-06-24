@@ -148,9 +148,9 @@ def test_result_template_supports_testimonial_success_message():
 def test_index_template_contains_creator_section_with_conditional_linkedin_url():
     html = Path("app/templates/index.html").read_text()
 
-    assert "CREADOR DEL PROYECTO" in html
-    assert "Proyecto creado por Bruno Peretti" in html
-    assert "Vocación360 fue creado como una herramienta gratuita" in html
+    assert "SOBRE EL PROYECTO" in html
+    assert "Desarrollado por Bruno Peretti" in html
+    assert "Vocación360 es una herramienta gratuita" in html
     assert "{% if creator_linkedin_url %}" in html
     assert 'href="{{ creator_linkedin_url }}"' in html
 
@@ -163,11 +163,11 @@ def test_index_template_contains_creator_section_outside_linkedin_condition():
     before_section = html[:section_start]
 
     assert "<!-- Creator section -->" in html
-    assert "Proyecto creado por Bruno Peretti" in section
-    assert "CREADOR DEL PROYECTO" in section
-    assert "Vocación360 fue creado como una herramienta gratuita" in section
+    assert "Desarrollado por Bruno Peretti" in section
+    assert "SOBRE EL PROYECTO" in section
+    assert "Vocación360 es una herramienta gratuita" in section
     assert "{% if creator_linkedin_url %}" not in before_section
-    assert section.index("Proyecto creado por Bruno Peretti") < section.index("{% if creator_linkedin_url %}")
+    assert section.index("Desarrollado por Bruno Peretti") < section.index("{% if creator_linkedin_url %}")
 
 
 def test_index_template_shows_only_linkedin_button_conditionally():
