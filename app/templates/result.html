@@ -118,8 +118,22 @@
     </div>
     <div class="result-section testimonial-form-section">
       <h2>¿Querés dejar tu opinión?</h2>
+      {% if request.query_params.get('comentario') == 'enviado' %}
+        <div class="testimonial-alert testimonial-alert-success" role="status">
+          <strong>Gracias por dejar tu opinión.</strong>
+          <p>La revisaremos antes de publicarla.</p>
+        </div>
+        <p class="testimonial-received-note">Ya recibimos tu comentario. Gracias por ayudar a mejorar Vocación360.</p>
+      {% elif request.query_params.get('comentario') == 'error' %}
+        <div class="testimonial-alert testimonial-alert-error" role="alert">
+          <strong>No pudimos guardar tu comentario.</strong>
+          <p>Revisá que tenga al menos 10 caracteres y que hayas aceptado la autorización para publicarlo.</p>
+        </div>
+      {% endif %}
       <p>Tu comentario nos ayuda a mejorar y también puede orientar a otras personas. Se publicará solo si es aprobado.</p>
+      {% if request.query_params.get('comentario') != 'enviado' %}
       <form class="participant-form" method="post" action="/testimonios">
+        <input type="hidden" name="return_to" value="{{ request.url.path }}{% if request.url.query %}?{{ request.url.query }}{% endif %}">
         <div class="form-grid">
           <label>Nombre (opcional)
             <input type="text" name="name" maxlength="80" autocomplete="name">
@@ -134,6 +148,7 @@
         </label>
         <button class="button" type="submit">Enviar comentario</button>
       </form>
+      {% endif %}
     </div>
   {% endif %}
 </section>

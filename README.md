@@ -144,3 +144,7 @@ Incluye la base funcional inicial, el banco de 36 preguntas RIASEC, el test por 
 Al finalizar el resultado real, las personas pueden dejar un comentario opcional sobre su experiencia con el test. Estos comentarios se guardan en la base de datos como testimonios pendientes (`approved=False`) y no aparecen automáticamente en la landing.
 
 El panel protegido `/admin` muestra un contador de comentarios pendientes y una pantalla en `/admin/testimonios` donde el administrador puede aprobarlos o eliminarlos. Solo los comentarios aprobados por el admin se muestran públicamente en la landing, hasta un máximo de 6 recientes. No se publica el WhatsApp ni datos del test junto con los comentarios.
+
+### Perfil del creador en la landing
+
+`CREATOR_LINKEDIN_URL` permite mostrar un botón hacia el perfil de LinkedIn del creador en la sección pública "Creador del proyecto" de la landing. Es opcional: si se omite o queda vacío, la sección se muestra sin botón. Para evitar enlaces inseguros, el valor debe ser una URL que empiece con `https://`.
